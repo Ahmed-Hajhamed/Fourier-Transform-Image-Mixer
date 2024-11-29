@@ -1,0 +1,64 @@
+import cv2
+import numpy as np
+
+# Load the image in grayscale
+image = cv2.imread("C:\\Users\VICTUS\Downloads\IMG_20230520_183040_006.jpg", cv2.IMREAD_GRAYSCALE)
+
+# Resize if necessary
+height, width = image.shape 
+image = cv2.resize(image, (width, height))  # Example size
+
+# Normalize to [0, 1] for numerical stability (optional)
+image = image / 255.0
+
+# Perform 2D Fourier Transform
+ft = np.fft.fft2(image)
+
+# Shift the zero-frequency component to the center for better visualization
+ft_shifted = np.fft.fftshift(ft)
+
+# Magnitude Spectrum
+magnitude_spectrum = np.abs(ft_shifted)
+magnitude_log = np.log1p(magnitude_spectrum)  # Use log for better visualization
+
+# Phase Spectrum
+phase_spectrum = np.angle(ft_shifted)
+
+# Real Component
+real_component = np.real(ft_shifted)
+
+# Imaginary Component
+imaginary_component = np.imag(ft_shifted)
+
+import matplotlib.pyplot as plt
+
+# Plot original image and FT components
+plt.figure(figsize=(12, 8))
+
+# Original Image
+plt.subplot(2, 3, 1)
+plt.title("Original Image")
+plt.imshow(image, cmap="gray")
+
+# Magnitude Spectrum
+plt.subplot(2, 3, 2)
+plt.title("Magnitude Spectrum (Log)")
+plt.imshow(magnitude_log, cmap="gray")
+
+# Phase Spectrum
+plt.subplot(2, 3, 3)
+plt.title("Phase Spectrum")
+plt.imshow(phase_spectrum, cmap="gray")
+
+# Real Component
+plt.subplot(2, 3, 4)
+plt.title("Real Component")
+plt.imshow(real_component, cmap="gray")
+
+# Imaginary Component
+plt.subplot(2, 3, 5)
+plt.title("Imaginary Component")
+plt.imshow(imaginary_component, cmap="gray")
+
+plt.tight_layout()
+plt.show()
