@@ -1,64 +1,97 @@
 import cv2
 import numpy as np
+from PyQt5.QtWidgets import QFileDialog
 
-# Load the image in grayscale
-image = cv2.imread("C:\\Users\VICTUS\Downloads\IMG_20230520_183040_006.jpg", cv2.IMREAD_GRAYSCALE)
+class ImageProcessor():
+    def __init__(self):
+        super().__init__()
+        self.image = None
+        self.path = None
 
-# Resize if necessary
-height, width = image.shape 
-image = cv2.resize(image, (width, height))  # Example size
+    def load_image(self):
+        """"Load Image and get Magnitude, Phase, Real and Imaginary parts of the Image FT"""
+        self.path, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif)")
+        
+        self.image = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
 
-# Normalize to [0, 1] for numerical stability (optional)
-image = image / 255.0
+        # Normalize to [0, 1]
+        max_pixel_value = self.image.max() 
+        self.image = self.image / max_pixel_value
 
-# Perform 2D Fourier Transform
-ft = np.fft.fft2(image)
+        self.ft = np.fft.fft2(self.image)
+        # Shift the zero-frequency component to the center for better visualization
+        self.ft_shifted = np.fft.fftshift(self.ft)
 
-# Shift the zero-frequency component to the center for better visualization
-ft_shifted = np.fft.fftshift(ft)
+        self.magnitude_spectrum = np.abs(self.ft_shifted)
+        self.magnitude_log = np.log1p(self.magnitude_spectrum)  # Use log for better visualization
+        self.phase_spectrum = np.angle(self.ft_shifted)
+        self.real_component = np.real(self.ft_shifted)
+        self.imaginary_component = np.imag(self.ft_shifted)
 
-# Magnitude Spectrum
-magnitude_spectrum = np.abs(ft_shifted)
-magnitude_log = np.log1p(magnitude_spectrum)  # Use log for better visualization
+    def resize_image(self, width, height):
+        self.image = cv2.resize(self.image, (width, height)) 
 
-# Phase Spectrum
-phase_spectrum = np.angle(ft_shifted)
+    def modify_magnitude(self, gain):
+        modified_magnitude = self.magnitude_spectrum * gain 
+        self.ft_shifted = modified_magnitude * np.exp(1j * self.phase_spectrum)
 
-# Real Component
-real_component = np.real(ft_shifted)
+    def modify_phase(self, angle_in_degrees):
+        shift_in_rad = angle_in_degrees * np.pi / 180.0
+        modified_phase = self.phase_spectrum + shift_in_rad 
+        self.ft_shifted = self.magnitude_spectrum * np.exp(1j * modified_phase)
 
-# Imaginary Component
-imaginary_component = np.imag(ft_shifted)
+    def modify_real_parts(self, gain):
+        self.real_component *= gain
+        self.ft_shifted = self.real_component + 1j * self.imaginary_component
 
-import matplotlib.pyplot as plt
+    def modify_imaginary_parts(self, gain):
+        self.imaginary_component *= gain
+        self.ft_shifted = self.real_component + 1j * self.imaginary_component
 
-# Plot original image and FT components
-plt.figure(figsize=(12, 8))
+    def modify_selected_part(compoent_to_modify, selected_row, selected_coloumn, gain, phase_to_modify = None):
+        if phase_to_modify is None:
+            row_start, row_end = selected_row[0], selected_row[-1]
+            col_start, col_end = selected_coloumn[0], selected_coloumn[-1]
 
-# Original Image
-plt.subplot(2, 3, 1)
-plt.title("Original Image")
-plt.imshow(image, cmap="gray")
+            compoent_to_modify[row_start:row_end, col_start:col_end] *= gain 
+        else:
+            angle_in_rad = gain * np.pi / 180.0
+            phase_to_modify[row_start:row_end, col_start:col_end] += angle_in_rad
 
-# Magnitude Spectrum
-plt.subplot(2, 3, 2)
-plt.title("Magnitude Spectrum (Log)")
-plt.imshow(magnitude_log, cmap="gray")
+    def modify_low_frequencies(compoent_to_modify, gain, phase_to_modify = None):
+        rows, cols = compoent_to_modify.shape
+        center_x, center_y = rows // 2, cols // 2
+        radius = 30 
+        # Create a mask for high frequencies
+        y, x = np.ogrid[:rows, :cols]
+        mask = (x - center_x)**2 + (y - center_y)**2 <= radius**2
 
-# Phase Spectrum
-plt.subplot(2, 3, 3)
-plt.title("Phase Spectrum")
-plt.imshow(phase_spectrum, cmap="gray")
+        if phase_to_modify is None:
+            compoent_to_modify[mask] *= gain  
+        else:
+            shift_in_rad = gain * np.pi / 180.0
+            phase_to_modify[mask] += shift_in_rad
 
-# Real Component
-plt.subplot(2, 3, 4)
-plt.title("Real Component")
-plt.imshow(real_component, cmap="gray")
 
-# Imaginary Component
-plt.subplot(2, 3, 5)
-plt.title("Imaginary Component")
-plt.imshow(imaginary_component, cmap="gray")
+    def modify_high_frequencies(compoent_to_modify, gain, phase_to_modify = None):
+        rows, cols = compoent_to_modify.shape
+        center_x, center_y = rows // 2, cols // 2
+        radius = 30 
+        # Create a mask for high frequencies
+        y, x = np.ogrid[:rows, :cols]
+        mask = (x - center_x)**2 + (y - center_y)**2 >= radius**2
 
-plt.tight_layout()
-plt.show()
+        if phase_to_modify is None:
+            compoent_to_modify[mask] *= gain  
+
+        else:
+            shift_in_rad = gain * np.pi / 180.0
+            phase_to_modify[mask] += shift_in_rad
+
+    def reconstruct_image(self):
+        ft_inverse_shift = np.fft.ifftshift(self.ft_shifted)
+
+        self.reconstructed_image = np.fft.ifft2(ft_inverse_shift)
+        self.reconstructed_image = np.abs(self.reconstructed_image)
+
+        self.reconstructed_image = np.clip(self.reconstructed_image, 0, 1)
