@@ -99,3 +99,4 @@ class ImageProcessor():
         self.reconstructed_image = np.abs(self.reconstructed_image)
 
         self.reconstructed_image = np.clip(self.reconstructed_image, 0, 1)
+        

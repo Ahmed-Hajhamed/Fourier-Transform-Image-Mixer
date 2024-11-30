@@ -1,0 +1,35 @@
+import cv2
+
+# Initialize default values
+alpha = 1.0  # Contrast (1.0 means no change)
+beta = 0      # Brightness (0 means no change)
+
+# Callback function for trackbars
+def update_image(val):
+    global alpha, beta
+    # Get the values from the trackbars
+    alpha = cv2.getTrackbarPos('Contrast', 'Adjusted Image') / 10  # Convert to float range [1.0, 3.0]
+    beta = cv2.getTrackbarPos('Brightness', 'Adjusted Image') - 50  # Convert to range [-50, 50]
+    
+    # Adjust the image with current alpha and beta values
+    adjusted_image = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
+    
+    # Show the updated image
+    cv2.imshow('Adjusted Image', adjusted_image)
+
+# Load the image
+image = cv2.imread("C:\\Users\VICTUS\Downloads\IMG_20221210_061205_653.jpg", cv2.IMREAD_COLOR)
+image = cv2.resize(image, (1000, 800))
+# Create a window
+cv2.namedWindow('Adjusted Image')
+
+# Create trackbars for contrast and brightness
+cv2.createTrackbar('Contrast', 'Adjusted Image', 10, 30, update_image)  # 10 corresponds to alpha=1.0
+cv2.createTrackbar('Brightness', 'Adjusted Image', 50, 100, update_image)  # 50 corresponds to beta=0
+
+# Display initial image
+update_image(0)
+
+# Wait until a key is pressed
+cv2.waitKey(0)
+cv2.destroyAllWindows()
