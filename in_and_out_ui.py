@@ -2,7 +2,7 @@ import sys
 import cv2
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QGridLayout, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame,
-    QPushButton, QComboBox, QSlider, QFileDialog, QProgressBar, QGraphicsView, QGraphicsScene
+    QPushButton, QComboBox, QSlider, QFileDialog, QProgressBar, QGraphicsView, QGraphicsScene, QCheckBox
 )
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap, QImage
@@ -20,6 +20,14 @@ def creat_separator(type:str):
     separator.setFrameShadow(QFrame.Sunken)
     separator.setStyleSheet("padding: 0px;")
     return separator
+
+def slider_creator():
+    slider = QSlider(Qt.Vertical)
+    slider.setMinimum(0)
+    slider.setMaximum(100)
+    slider.setValue(100)
+    slider.setFixedHeight(100)
+    return slider
 
 class InputImageUi:
     def __init__(self):
@@ -98,6 +106,8 @@ class InputImageUi:
 
 class OutputImageUi:
     def __init__(self):
+
+        self.choice = 1
         self.v_layout = QVBoxLayout()
         self.grid_layout_of_slider = QGridLayout()
 
@@ -106,12 +116,22 @@ class OutputImageUi:
         self.label_1.setMinimumSize(350,300)
         self.v_layout.addWidget(self.label_1)
 
+        self.check_of_output_1 = QCheckBox("show")
+        self.check_of_output_1.setChecked(True)
+        self.check_of_output_1.stateChanged.connect(lambda: self.check_box_1())
+        self.v_layout.addWidget(self.check_of_output_1)
+
         self.seprator_1 = creat_separator("h")
         self.v_layout.addWidget(self.seprator_1)
         
         self.label_2 = QLabel("test 2")
         self.label_2.setMinimumSize(350,300)
         self.v_layout.addWidget(self.label_2)
+
+        self.check_of_output_2 = QCheckBox("show")
+        self.check_of_output_2.setChecked(False)
+        self.check_of_output_2.stateChanged.connect(self.check_box_2)
+        self.v_layout.addWidget(self.check_of_output_2)
 
         self.seprator_2 = creat_separator("h")
         self.v_layout.addWidget(self.seprator_2)
@@ -141,13 +161,42 @@ class OutputImageUi:
         self.label_of_imaginary = QLabel("imaginary")
         self.grid_layout_of_slider.addWidget(self.label_of_imaginary, 1, 3)
 
-        self.slider_reigon = QSlider(Qt.Vertical)
-        self.slider_reigon.setFixedHeight(100)
-        self.grid_layout_of_slider.addWidget(self.slider_reigon, 0, 4)
         
-        self.label_of_reigon = QLabel("reigon")
-        self.grid_layout_of_slider.addWidget(self.label_of_reigon, 1, 4)
-
-
         self.v_layout.addLayout(self.grid_layout_of_slider)
+        
+
+        h_layout_of_mix_and_region = QHBoxLayout()
+        self.mix_button = QPushButton("Mix")
+        self.mix_button.setFixedWidth(100)
+        h_layout_of_mix_and_region.addWidget(self.mix_button)
+
+        self.slider_reigon = QSlider(Qt.Horizontal)
+        self.slider_reigon.setFixedWidth(200)
+        h_layout_of_mix_and_region.addWidget(self.slider_reigon)
+
+        self.label_of_reigon = QLabel("reigon")
+        self.label_of_reigon.setFixedWidth(100)
+        h_layout_of_mix_and_region.addWidget(self.label_of_reigon)
+
+        self.v_layout.addLayout(h_layout_of_mix_and_region)
+        
+
+
+        
         # self.v_layout.setContentsMargins(0, 0, 0, 0)
+
+    def check_box_1(self):
+        print(f"test1---> ")
+        if self.check_of_output_1.isChecked():
+            print("test2")
+            self.check_of_output_2.setChecked(False)
+        else:
+            self.check_of_output_2.setChecked(True)
+
+    def check_box_2(self): 
+        if self.check_of_output_2.isChecked():
+            self.check_of_output_1.setChecked(False)
+        else:
+            self.check_of_output_1.setChecked(True)
+
+    
