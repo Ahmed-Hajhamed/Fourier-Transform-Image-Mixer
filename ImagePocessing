@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from PyQt5.QtWidgets import QFileDialog
 
-class ImageProcessor():
+class Image():
     def __init__(self):
         super().__init__()
         self.image = None

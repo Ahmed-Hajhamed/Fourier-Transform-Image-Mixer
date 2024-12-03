@@ -7,8 +7,8 @@ from PyQt5.QtWidgets import (
     QPushButton, QComboBox, QSlider, QFileDialog, QProgressBar, QGraphicsView, QGraphicsScene
 )
 from PyQt5.QtCore import Qt
-
-
+from qt_material import apply_stylesheet
+import numpy as np
 class ui(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -22,7 +22,7 @@ class ui(QMainWindow):
         #input images 
         self.input_1 = InputImageUi()
         grid_layout_of_input.addLayout(self.input_1.v_layout_container, 0 , 0)
-
+        
         self.input_2 = InputImageUi()
         grid_layout_of_input.addLayout(self.input_2.v_layout_container, 0 , 1)
 
@@ -47,11 +47,16 @@ class ui(QMainWindow):
         container = QWidget()
         container.setLayout(h_layout_of_output_and_input)
         self.setCentralWidget(container)
+        self.input_1.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
+        self.input_2.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
+        self.input_3.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
+        self.input_4.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
 
 
 
 def main():
     app = QApplication(sys.argv)
+    apply_stylesheet(app, "dark_medical.xml")
     window = ui()
     window.show()
     sys.exit(app.exec_())

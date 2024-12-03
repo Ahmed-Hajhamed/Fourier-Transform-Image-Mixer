@@ -29,9 +29,9 @@ def slider_creator():
     slider.setFixedHeight(100)
     return slider
 
-class InputImageUi:
-    def __init__(self):
-
+class InputImageUi():
+    def __init__(self, parent=None):
+        # super().__init__(parent)
         self.image_path = None
         self.image = None
 
@@ -73,6 +73,17 @@ class InputImageUi:
         self.v_layout_container.addLayout(self.h_layout_of_buttons_and_combo_box)
 
         pass
+    
+
+    # def mouseDoubleClickEvent(self, a0):
+
+    #     self.image_path, _ = QFileDialog.getOpenFileName(
+    #         self, 
+    #         "Open File", 
+    #         "", 
+    #         "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
+    #     )
+    #     self.load_image(self.image_path)
 
     def load_image(self, image_path):
         """Load an image and convert it to grayscale if needed."""
@@ -87,17 +98,16 @@ class InputImageUi:
     def update_display(self):
         """Update the displayed image based on brightness and contrast adjustments."""
         if self.image is not None:
+            self.image = cv2.resize(self.image, (400, 500))
             # Apply brightness and contrast adjustments
             adjusted = cv2.convertScaleAbs(self.image, alpha=self.contrast, beta=self.brightness)
             self.adjusted_image = adjusted
-
             # Convert to QPixmap and display
             height, width = adjusted.shape
-            print(adjusted.data)
-            print(self.image)
             q_image = QImage(adjusted.data, width, height, width, QImage.Format_Grayscale8)
             pixmap = QPixmap.fromImage(q_image)
-            self.setPixmap(pixmap)
+            self.label_of_original_image.setPixmap(pixmap)
+            # self.label_of_original_image.resize(int(width/10), int(height/10))
 
     
     def plotImage(self):

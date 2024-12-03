@@ -1,10 +1,13 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-
+# from in_and_out_ui import InputImageUi
 # Load images and resize to same size
 img1 = cv2.imread("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg", cv2.IMREAD_GRAYSCALE)
 img2 = cv2.imread("C:\\Users\VICTUS\Downloads\IMG_20221210_061205_653.jpg", cv2.IMREAD_GRAYSCALE)
+
+# img1_rashed=InputImageUi()
+# img1_rashed.load_image()
 img1 = cv2.resize(img1, (960, 1280))
 img2 = cv2.resize(img2, (960, 1280))
 
@@ -21,8 +24,8 @@ mag2, phase2 = np.abs(ft2_shifted), np.angle(ft2_shifted)
 # Combine magnitude and phase (example: mag1 with phase2)
 # combined_ft = mag1 * np.exp(1j * phase2)
 
-alpha, beta = 0.5, 0.5  # Weights
-combined_ft = (alpha * mag1 + beta * mag2) * np.exp(1j * (alpha * phase1 + beta * phase2))
+alpha, beta = 1,1 # Weights
+combined_ft = (alpha * mag1 + 0 * mag2) * np.exp(1j * (- phase1 + 0 * phase2))
 
 # Adjust the brightness and contrast
 alpha = 1.2  # Contrast (1.0 means no change)
