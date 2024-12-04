@@ -47,11 +47,10 @@ class ui(QMainWindow):
         container = QWidget()
         container.setLayout(h_layout_of_output_and_input)
         self.setCentralWidget(container)
-        self.input_1.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
-        self.input_2.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
-        self.input_3.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
-        self.input_4.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
-        self.input_1.label_of_original_image.mouseDoubleClickEvent()
+        # self.input_1.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
+        # self.input_2.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
+        # self.input_3.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
+        # self.input_4.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
 
 
 def main():

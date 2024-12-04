@@ -4,9 +4,9 @@ from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QGridLayout, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame,
     QPushButton, QComboBox, QSlider, QFileDialog, QProgressBar, QGraphicsView, QGraphicsScene, QCheckBox
 )
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap, QImage
-
+from Image import Image
 
 
 def creat_separator(type:str):
@@ -28,35 +28,51 @@ def slider_creator():
     slider.setValue(100)
     slider.setFixedHeight(100)
     return slider
+
+
+
 class ImageLabel(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.image = Image()
+        self.last_mouse_pos = QPoint()
+    
+    def update_display(self):
+        """Update the displayed image based on brightness and contrast adjustments."""
+        if self.image is not None:
+            self.image.image = cv2.resize(self.image.image, (400, 500))
+            # Apply brightness and contrast adjustments
+            adjusted = cv2.convertScaleAbs(self.image.image, alpha=self.image.contrast, beta=self.image.brightness)
+            self.adjusted_image = adjusted
+            # Convert to QPixmap and display
+            height, width = adjusted.shape
+            q_image = QImage(adjusted.data, width, height, width, QImage.Format_Grayscale8)
+            pixmap = QPixmap.fromImage(q_image)
+            self.setPixmap(pixmap)
 
     def mouseDoubleClickEvent(self, event):
         # Open file dialog on double-click
-        file_path, _ = QFileDialog.getOpenFileName(
-            self, 
-            "Open File", 
-            "", 
-            "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
-        )
+        self.image.load_image()
+        self.update_display()
+
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.last_mouse_pos = event.pos()
 
     def mouseMoveEvent(self, event):
-        if self.original_image is not None and event.buttons() & Qt.LeftButton:
+        if self.image.image is not None and event.buttons() & Qt.LeftButton:
 
             delta = event.pos() - self.last_mouse_pos
             self.last_mouse_pos = event.pos()
 
 
-            self.brightness += delta.y()
-            self.contrast = max(0.1, self.contrast + delta.x() * 0.01)  # Prevent zero or negative contrast
+            self.image.brightness += delta.y()
+            self.image.contrast = max(0.1, self.image.contrast + delta.x() * 0.01)  # Prevent zero or negative contrast
+            self.update_display()
 
 
-class InputImageUi():
+class InputImageUi:
     def __init__(self, parent=None):
         # super().__init__(parent)
         self.image_path = None

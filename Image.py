@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from PyQt5.QtWidgets import QFileDialog
 
-class Image():
+class Image:
     def __init__(self):
         super().__init__()
         self.image = None
@@ -12,7 +12,13 @@ class Image():
 
     def load_image(self):
         """"Load Image and get Magnitude, Phase, Real and Imaginary parts of the Image FT"""
-        self.path, _ = QFileDialog.getOpenFileName(self, "Open Image", "", "Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif)")
+        self.path, _ = QFileDialog.getOpenFileName(
+            None, 
+            "Open File", 
+            "", 
+            "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
+        )
+        # self.path = ""
         
         self.image = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
 
