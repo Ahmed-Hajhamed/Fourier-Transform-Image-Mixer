@@ -109,8 +109,8 @@ class InputImageUi:
 
         self.h_layout_of_buttons_and_combo_box.addWidget(self.combo_box_of_components_based_on)
 
-        self.button_to_add_image = QPushButton("add")
-        self.h_layout_of_buttons_and_combo_box.addWidget(self.button_to_add_image)
+        # self.button_to_add_image = QPushButton("add")
+        # self.h_layout_of_buttons_and_combo_box.addWidget(self.button_to_add_image)
 
         self.v_layout_container.addLayout(self.h_layout_of_original_and_changed_of_the_image)
         self.v_layout_container.addLayout(self.h_layout_of_buttons_and_combo_box)

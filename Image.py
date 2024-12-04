@@ -23,8 +23,8 @@ class Image:
         self.image = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
 
         # Normalize to [0, 1]
-        max_pixel_value = self.image.max() 
-        self.image = self.image / max_pixel_value
+        # max_pixel_value = self.image.max() 
+        # self.image = self.image / max_pixel_value
 
         self.ft = np.fft.fft2(self.image)
         # Shift the zero-frequency component to the center for better visualization
@@ -105,5 +105,5 @@ class Image:
 
         self.reconstructed_image = np.fft.ifft2(ft_inverse_shift)
         self.reconstructed_image = np.abs(self.reconstructed_image)
-        self.reconstructed_image = np.clip(self.reconstructed_image, 0, 1)
+        # self.reconstructed_image = np.clip(self.reconstructed_image, 0, 1)
         
