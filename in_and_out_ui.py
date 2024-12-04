@@ -28,6 +28,33 @@ def slider_creator():
     slider.setValue(100)
     slider.setFixedHeight(100)
     return slider
+class ImageLabel(QLabel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+    def mouseDoubleClickEvent(self, event):
+        # Open file dialog on double-click
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, 
+            "Open File", 
+            "", 
+            "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
+        )
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self.last_mouse_pos = event.pos()
+
+    def mouseMoveEvent(self, event):
+        if self.original_image is not None and event.buttons() & Qt.LeftButton:
+
+            delta = event.pos() - self.last_mouse_pos
+            self.last_mouse_pos = event.pos()
+
+
+            self.brightness += delta.y()
+            self.contrast = max(0.1, self.contrast + delta.x() * 0.01)  # Prevent zero or negative contrast
+
 
 class InputImageUi():
     def __init__(self, parent=None):
@@ -49,11 +76,11 @@ class InputImageUi():
         self.h_layout_of_buttons_and_combo_box = QHBoxLayout()
         self.v_layout_container = QVBoxLayout()
 
-        self.label_of_original_image = QLabel("test")
+        self.label_of_original_image = ImageLabel()
         # self.label_of_original_image.setScaledContents(True)
         self.h_layout_of_original_and_changed_of_the_image.addWidget(self.label_of_original_image)
 
-        self.label_of_components_based_on = QLabel("test")
+        self.label_of_components_based_on = QLabel("zeyad")
         # self.label_of_components_based_on.setScaledContents(True)
         self.h_layout_of_original_and_changed_of_the_image.addWidget(self.label_of_components_based_on)
 
@@ -72,18 +99,19 @@ class InputImageUi():
         self.v_layout_container.addLayout(self.h_layout_of_original_and_changed_of_the_image)
         self.v_layout_container.addLayout(self.h_layout_of_buttons_and_combo_box)
 
-        pass
+    
     
 
-    # def mouseDoubleClickEvent(self, a0):
+    def mouseDoubleClickEvent(self, a0):
 
-    #     self.image_path, _ = QFileDialog.getOpenFileName(
-    #         self, 
-    #         "Open File", 
-    #         "", 
-    #         "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
-    #     )
-    #     self.load_image(self.image_path)
+        self.image_path, _ = QFileDialog.getOpenFileName(
+            self, 
+            "Open File", 
+            "", 
+            "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
+        )
+        self.load_image(self.image_path)
+
 
     def load_image(self, image_path):
         """Load an image and convert it to grayscale if needed."""

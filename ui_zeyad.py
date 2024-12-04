@@ -51,7 +51,7 @@ class ui(QMainWindow):
         self.input_2.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
         self.input_3.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
         self.input_4.load_image("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")
-
+        self.input_1.label_of_original_image.mouseDoubleClickEvent()
 
 
 def main():
