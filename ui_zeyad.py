@@ -20,17 +20,17 @@ class ui(QMainWindow):
         grid_layout_of_input = QGridLayout()
         
         #input images 
-        self.input_1 = InputImageUi()
-        grid_layout_of_input.addLayout(self.input_1.v_layout_container, 0 , 0)
+        self.image_1 = InputImageUi()
+        grid_layout_of_input.addLayout(self.image_1.v_layout_container, 0 , 0)
         
-        self.input_2 = InputImageUi()
-        grid_layout_of_input.addLayout(self.input_2.v_layout_container, 0 , 1)
+        self.image_2 = InputImageUi()
+        grid_layout_of_input.addLayout(self.image_2.v_layout_container, 0 , 1)
 
-        self.input_3 = InputImageUi()
-        grid_layout_of_input.addLayout(self.input_3.v_layout_container, 1 , 0)
+        self.image_3 = InputImageUi()
+        grid_layout_of_input.addLayout(self.image_3.v_layout_container, 1 , 0)
 
-        self.input_4 = InputImageUi()
-        grid_layout_of_input.addLayout(self.input_4.v_layout_container, 1 , 1)
+        self.image_4 = InputImageUi()
+        grid_layout_of_input.addLayout(self.image_4.v_layout_container, 1 , 1)
 
         h_layout_of_output_and_input.addLayout(grid_layout_of_input)
 

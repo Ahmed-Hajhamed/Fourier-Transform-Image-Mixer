@@ -2,7 +2,7 @@ import sys
 import cv2
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow, QGridLayout, QWidget, QLabel, QVBoxLayout, QHBoxLayout, QFrame,
-    QPushButton, QComboBox, QSlider, QFileDialog, QProgressBar, QGraphicsView, QGraphicsScene, QCheckBox
+    QPushButton, QComboBox, QSlider, QFileDialog, QProgressBar, QGraphicsView, QGraphicsScene, QCheckBox, 
 )
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap, QImage
@@ -89,7 +89,7 @@ class InputImageUi:
                              """
         
         self.h_layout_of_original_and_changed_of_the_image = QHBoxLayout()
-        self.h_layout_of_buttons_and_combo_box = QHBoxLayout()
+        self.h_layout_of_buttons_and_combo_box =QGridLayout()
         self.v_layout_container = QVBoxLayout()
 
         self.label_of_original_image = ImageLabel()
@@ -100,6 +100,13 @@ class InputImageUi:
         # self.label_of_components_based_on.setScaledContents(True)
         self.h_layout_of_original_and_changed_of_the_image.addWidget(self.label_of_components_based_on)
 
+        self.magnitude_real_label = QLabel("Magnitude:")
+        self.phase_imaginary_label = QLabel("Phase:")
+
+        self.magnitude_real_slider =  QSlider(Qt.Horizontal)
+        self.phase_imaginary_slider = QSlider(Qt.Horizontal)
+
+        self.ft_component_label = QLabel("FT Component:")
 
         self.combo_box_of_components_based_on = QComboBox()
         self.combo_box_of_components_based_on.addItem("Magnitude")
@@ -107,7 +114,12 @@ class InputImageUi:
         self.combo_box_of_components_based_on.addItem("Real")
         self.combo_box_of_components_based_on.addItem("Imaginary")
 
-        self.h_layout_of_buttons_and_combo_box.addWidget(self.combo_box_of_components_based_on)
+        self.h_layout_of_buttons_and_combo_box.addWidget(self.magnitude_real_label, 0, 0)
+        self.h_layout_of_buttons_and_combo_box.addWidget(self.phase_imaginary_label, 1, 0)
+        self.h_layout_of_buttons_and_combo_box.addWidget(self.magnitude_real_slider, 0, 1)
+        self.h_layout_of_buttons_and_combo_box.addWidget(self.phase_imaginary_slider, 1, 1)
+        self.h_layout_of_buttons_and_combo_box.addWidget(self.ft_component_label, 0, 2, 0, 1)
+        self.h_layout_of_buttons_and_combo_box.addWidget(self.combo_box_of_components_based_on, 0, 3, 0, 1)
 
         # self.button_to_add_image = QPushButton("add")
         # self.h_layout_of_buttons_and_combo_box.addWidget(self.button_to_add_image)
@@ -127,31 +139,6 @@ class InputImageUi:
             "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
         )
         self.load_image(self.image_path)
-
-
-    def load_image(self, image_path):
-        """Load an image and convert it to grayscale if needed."""
-        self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-        self.brightness = 0
-        self.contrast = 1.0
-        self.update_display()
-
-    def add_image(self, image_path):
-        self.image = image_path
-    
-    def update_display(self):
-        """Update the displayed image based on brightness and contrast adjustments."""
-        if self.image is not None:
-            self.image = cv2.resize(self.image, (400, 500))
-            # Apply brightness and contrast adjustments
-            adjusted = cv2.convertScaleAbs(self.image, alpha=self.contrast, beta=self.brightness)
-            self.adjusted_image = adjusted
-            # Convert to QPixmap and display
-            height, width = adjusted.shape
-            q_image = QImage(adjusted.data, width, height, width, QImage.Format_Grayscale8)
-            pixmap = QPixmap.fromImage(q_image)
-            self.label_of_original_image.setPixmap(pixmap)
-            # self.label_of_original_image.resize(int(width/10), int(height/10))
 
     
     def plotImage(self):
@@ -191,32 +178,32 @@ class OutputImageUi:
         self.v_layout.addWidget(self.seprator_2)
         
         
-        self.slider_magnitude = QSlider(Qt.Vertical)
-        self.slider_magnitude.setFixedHeight(100)
-        self.grid_layout_of_slider.addWidget(self.slider_magnitude, 0, 0)
-        self.label_of_magnitude = QLabel("magnitude")
-        self.grid_layout_of_slider.addWidget(self.label_of_magnitude, 1, 0)
+        # self.slider_magnitude = QSlider(Qt.Vertical)
+        # self.slider_magnitude.setFixedHeight(100)
+        # self.grid_layout_of_slider.addWidget(self.slider_magnitude, 0, 0)
+        # self.label_of_magnitude = QLabel("magnitude")
+        # self.grid_layout_of_slider.addWidget(self.label_of_magnitude, 1, 0)
 
-        self.slider_phase = QSlider(Qt.Vertical)
-        self.slider_phase.setFixedHeight(100)
-        self.grid_layout_of_slider.addWidget(self.slider_phase, 0, 1)
-        self.label_of_phase = QLabel("phase")
-        self.grid_layout_of_slider.addWidget(self.label_of_phase, 1, 1)
+        # self.slider_phase = QSlider(Qt.Vertical)
+        # self.slider_phase.setFixedHeight(100)
+        # self.grid_layout_of_slider.addWidget(self.slider_phase, 0, 1)
+        # self.label_of_phase = QLabel("phase")
+        # self.grid_layout_of_slider.addWidget(self.label_of_phase, 1, 1)
 
-        self.slider_real = QSlider(Qt.Vertical)
-        self.slider_real.setFixedHeight(100)
-        self.grid_layout_of_slider.addWidget(self.slider_real, 0, 2)
-        self.label_of_real = QLabel("real")
-        self.grid_layout_of_slider.addWidget(self.label_of_real, 1, 2)
+        # self.slider_real = QSlider(Qt.Vertical)
+        # self.slider_real.setFixedHeight(100)
+        # self.grid_layout_of_slider.addWidget(self.slider_real, 0, 2)
+        # self.label_of_real = QLabel("real")
+        # self.grid_layout_of_slider.addWidget(self.label_of_real, 1, 2)
 
-        self.slider_imaginary = QSlider(Qt.Vertical)
-        self.slider_imaginary.setFixedHeight(100)
-        self.grid_layout_of_slider.addWidget(self.slider_imaginary, 0, 3)
-        self.label_of_imaginary = QLabel("imaginary")
-        self.grid_layout_of_slider.addWidget(self.label_of_imaginary, 1, 3)
+        # self.slider_imaginary = QSlider(Qt.Vertical)
+        # self.slider_imaginary.setFixedHeight(100)
+        # self.grid_layout_of_slider.addWidget(self.slider_imaginary, 0, 3)
+        # self.label_of_imaginary = QLabel("imaginary")
+        # self.grid_layout_of_slider.addWidget(self.label_of_imaginary, 1, 3)
 
         
-        self.v_layout.addLayout(self.grid_layout_of_slider)
+        # self.v_layout.addLayout(self.grid_layout_of_slider)
         
 
         h_layout_of_mix_and_region = QHBoxLayout()
