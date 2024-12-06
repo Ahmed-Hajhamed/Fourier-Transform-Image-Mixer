@@ -1,30 +1,40 @@
 import cv2
 import numpy as np
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtGui import QPixmap, QImage
 
 class Image:
-    def __init__(self):
+    def __init__(self, image_label):
         super().__init__()
         self.image = None
-        self.path = None
         self.contrast = 1.0
         self.brightness = 0
+        self.image_label = image_label
 
-    def load_image(self):
+    def update_display(self):
+        """Update the displayed image based on brightness and contrast adjustments."""
+        height, width = self.image.shape
+        q_image = QImage(self.image.data, width, height, width, QImage.Format_Grayscale8)
+        pixmap = QPixmap.fromImage(q_image)
+        self.image_label.setPixmap(pixmap)
+
+    def load_image(self, image_path= None):
         """"Load Image and get Magnitude, Phase, Real and Imaginary parts of the Image FT"""
-        self.path, _ = QFileDialog.getOpenFileName(
-            None, 
-            "Open File", 
-            "", 
-            "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
-        )
-        # self.path = ""
-        
-        self.image = cv2.imread(self.path, cv2.IMREAD_GRAYSCALE)
+        if image_path is None:
+            image_path, _ = QFileDialog.getOpenFileName(
+                None, 
+                "Open File", 
+                "", 
+                "All Files (*.*);;Text Files (*.txt);;Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif)"
+            )
+
+        self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
         # Normalize to [0, 1]
         # max_pixel_value = self.image.max() 
         # self.image = self.image / max_pixel_value
+
+        self.adjust_brightness_contrast(reset= True)
 
         self.ft = np.fft.fft2(self.image)
         # Shift the zero-frequency component to the center for better visualization
@@ -36,29 +46,47 @@ class Image:
         self.real_component = np.real(self.ft_shifted)
         self.imaginary_component = np.imag(self.ft_shifted)
 
+        self.update_display()
+    def compute_magnitude_phase(self):
+        self.magnitude_spectrum = np.sqrt(self.real_component**2 + self.imaginary_component**2)
+        self.phase_spectrum = np.arctan2(self.imaginary_component, self.real_component)
+
+    def compute_real_imaginary_parts(self):
+        self.real_component = self.magnitude_spectrum * np.cos(self.phase_spectrum)
+        self.imaginary_component = self.magnitude_spectrum * np.sin(self.phase_spectrum)
+
     def resize_image(self, width, height):
         self.image = cv2.resize(self.image, (width, height))
+        self.update_display()
 
-    def adjust_brightness_contrast(self):
-        self.image= cv2.convertScaleAbs(self.image, alpha=self.constrast, beta=self.brightness)  # Contrast (1.0 means no change)
+    def adjust_brightness_contrast(self, reset= False):
+        if reset:
+            self.brightness, self.contrast = 0, 1.0
+
+        self.image= cv2.convertScaleAbs(self.image, alpha=self.contrast, beta=self.brightness)  # Contrast (1.0 means no change)
                                                                                      # Brightness (0 means no change)
+        self.update_display()
 
     def modify_magnitude(self, gain):
         self.magnitude_spectrum= self.magnitude_spectrum * gain 
         self.ft_shifted = self.magnitude_spectrum * np.exp(1j * self.phase_spectrum)
+        self.compute_real_imaginary_parts()
 
     def modify_phase(self, angle_in_degrees):
         shift_in_rad = angle_in_degrees * np.pi / 180.0
         self.phase_spectrum = self.phase_spectrum + shift_in_rad 
         self.ft_shifted = self.magnitude_spectrum * np.exp(1j * self.phase_spectrum)
+        self.compute_real_imaginary_parts()
 
     def modify_real_parts(self, gain):
         self.real_component *= gain
         self.ft_shifted = self.real_component + 1j * self.imaginary_component
+        self.compute_magnitude_phase()
 
     def modify_imaginary_parts(self, gain):
         self.imaginary_component *= gain
         self.ft_shifted = self.real_component + 1j * self.imaginary_component
+        self.compute_magnitude_phase()
 
     def modify_selected_part(compoent_to_modify, selected_row, selected_coloumn, gain, phase_to_modify = None):
         if phase_to_modify is None:
@@ -69,6 +97,7 @@ class Image:
         else:
             angle_in_rad = gain * np.pi / 180.0
             phase_to_modify[row_start:row_end, col_start:col_end] += angle_in_rad
+            
 
     def modify_low_frequencies(compoent_to_modify, gain, phase_to_modify = None):
         rows, cols = compoent_to_modify.shape
@@ -105,5 +134,6 @@ class Image:
 
         self.reconstructed_image = np.fft.ifft2(ft_inverse_shift)
         self.reconstructed_image = np.abs(self.reconstructed_image)
+
         # self.reconstructed_image = np.clip(self.reconstructed_image, 0, 1)
         

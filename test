@@ -1,35 +1,43 @@
-import cv2
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget, QApplication
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
+import sys
+# Rsize images and label test
+class ImageFitApp(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
 
-# Initialize default values
-alpha = 1.0  # Contrast (1.0 means no change)
-beta = 0      # Brightness (0 means no change)
+    def initUI(self):
+        # Create label and load image
+        self.label = QLabel(self)
+        pixmap = QPixmap("C:\\Users\VICTUS\Downloads\IMG_20230807_000054_971.jpg")  # Replace with your image path
 
-# Callback function for trackbars
-def update_image(val):
-    global alpha, beta
-    # Get the values from the trackbars
-    alpha = cv2.getTrackbarPos('Contrast', 'Adjusted Image') / 10  # Convert to float range [1.0, 3.0]
-    beta = cv2.getTrackbarPos('Brightness', 'Adjusted Image') - 50  # Convert to range [-50, 50]
-    
-    # Adjust the image with current alpha and beta values
-    adjusted_image = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
-    
-    # Show the updated image
-    cv2.imshow('Adjusted Image', adjusted_image)
+        # Scale the pixmap to fit the label, keeping aspect ratio
+        self.label.setPixmap(pixmap)
+        self.resize_label_and_pixmap(pixmap)
 
-# Load the image
-image = cv2.imread("C:\\Users\VICTUS\Downloads\IMG_20221210_061205_653.jpg", cv2.IMREAD_COLOR)
-image = cv2.resize(image, (1000, 800))
-# Create a window
-cv2.namedWindow('Adjusted Image')
+        # Layout for better resizing behavior
+        layout = QVBoxLayout()
+        layout.addWidget(self.label)
+        self.setLayout(layout)
 
-# Create trackbars for contrast and brightness
-cv2.createTrackbar('Contrast', 'Adjusted Image', 10, 30, update_image)  # 10 corresponds to alpha=1.0
-cv2.createTrackbar('Brightness', 'Adjusted Image', 50, 100, update_image)  # 50 corresponds to beta=0
+        self.setWindowTitle("Image Fit in UI")
+        self.show()
 
-# Display initial image
-update_image(0)
+    def resize_label_and_pixmap(self, pixmap):
+        # Set label size to fit the pixmap
+        target_width = 300  # Desired width
+        target_height = 200  # Desired height
 
-# Wait until a key is pressed
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+        # Scale pixmap to fit within target size while maintaining aspect ratio
+        scaled_pixmap = pixmap.scaled(target_width, target_height, Qt.KeepAspectRatio)
+        self.label.setPixmap(scaled_pixmap)
+
+        # Resize label to match scaled pixmap
+        self.label.setFixedSize(scaled_pixmap.size())
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    ex = ImageFitApp()
+    sys.exit(app.exec_())

@@ -1,5 +1,21 @@
-from ui_zeyad import ui
-class main(ui):
+# from UI import Ui_MainWindow
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow)
+from PyQt5.QtGui import QPixmap, QImage
+import sys
+from qt_material import apply_stylesheet
+from UI import Ui_MainWindow
+class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        
+        self.setupUi(self)
+
+def main():
+    app = QApplication(sys.argv)
+    apply_stylesheet(app, "dark_medical.xml")
+    window = MainWindow()
+    window.show()
+    sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()

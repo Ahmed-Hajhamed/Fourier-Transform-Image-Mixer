@@ -34,50 +34,44 @@ def slider_creator():
 class ImageLabel(QLabel):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.image = Image()
+        self.image = Image(self)
+        # self.image.image_label = self
         self.last_mouse_pos = QPoint()
     
-    def update_display(self):
-        """Update the displayed image based on brightness and contrast adjustments."""
-        if self.image is not None:
-            self.image.image = cv2.resize(self.image.image, (400, 500))
-            # Apply brightness and contrast adjustments
-            adjusted = cv2.convertScaleAbs(self.image.image, alpha=self.image.contrast, beta=self.image.brightness)
-            self.adjusted_image = adjusted
-            # Convert to QPixmap and display
-            height, width = adjusted.shape
-            q_image = QImage(adjusted.data, width, height, width, QImage.Format_Grayscale8)
-            pixmap = QPixmap.fromImage(q_image)
-            self.setPixmap(pixmap)
-
     def mouseDoubleClickEvent(self, event):
-        # Open file dialog on double-click
-        self.image.load_image()
-        self.update_display()
+        if event.button() == Qt.LeftButton:
+            # Open file dialog on double-click
+            self.image.load_image()
+            self.image.resize_image(400, 500)
+            # self.image.update_display()
 
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.last_mouse_pos = event.pos()
+            self.in_brightness = self.image.brightness
+            self.in_con = self.image.contrast
 
     def mouseMoveEvent(self, event):
         if self.image.image is not None and event.buttons() & Qt.LeftButton:
-
             delta = event.pos() - self.last_mouse_pos
             self.last_mouse_pos = event.pos()
+            new_brightness = self.in_brightness - delta.y() /10
+            new_contrast = max(0.1, self.in_con + delta.x()/10 * 0.01)  # Prevent zero or negative contrast
 
+            brightness_min, brightness_max = -50, 50  # Set brightness limits
+            contrast_min, contrast_max = 0.5, 2.0  
 
-            self.image.brightness += delta.y()
-            self.image.contrast = max(0.1, self.image.contrast + delta.x() * 0.01)  # Prevent zero or negative contrast
-            self.update_display()
+            self.image.brightness = max(brightness_min, min(brightness_max, new_brightness))
+            self.image.contrast = max(contrast_min, min(contrast_max, new_contrast))
+
+            self.image.adjust_brightness_contrast()
+            # self.image.update_display()
 
 
 class InputImageUi:
     def __init__(self, parent=None):
         # super().__init__(parent)
-        self.image_path = None
-        self.image = None
-
         label_stylee_sheet = """
                             Qlable{
                             color:#878dfa;
@@ -90,8 +84,7 @@ class InputImageUi:
         
         self.h_layout_of_original_and_changed_of_the_image = QHBoxLayout()
         self.h_layout_of_buttons_and_combo_box =QGridLayout()
-        self.v_layout_container = QVBoxLayout()
-
+        self.v_layout_container = QVBoxLayout() 
         self.label_of_original_image = ImageLabel()
         # self.label_of_original_image.setScaledContents(True)
         self.h_layout_of_original_and_changed_of_the_image.addWidget(self.label_of_original_image)
@@ -121,25 +114,12 @@ class InputImageUi:
         self.h_layout_of_buttons_and_combo_box.addWidget(self.ft_component_label, 0, 2, 0, 1)
         self.h_layout_of_buttons_and_combo_box.addWidget(self.combo_box_of_components_based_on, 0, 3, 0, 1)
 
-        # self.button_to_add_image = QPushButton("add")
-        # self.h_layout_of_buttons_and_combo_box.addWidget(self.button_to_add_image)
 
         self.v_layout_container.addLayout(self.h_layout_of_original_and_changed_of_the_image)
         self.v_layout_container.addLayout(self.h_layout_of_buttons_and_combo_box)
 
     
     
-
-    def mouseDoubleClickEvent(self, a0):
-
-        self.image_path, _ = QFileDialog.getOpenFileName(
-            self, 
-            "Open File", 
-            "", 
-            "All Files (*.*);;Text Files (*.txt);;Images (*.png *.jpg)"
-        )
-        self.load_image(self.image_path)
-
     
     def plotImage(self):
         pass
@@ -150,11 +130,9 @@ class OutputImageUi:
 
         self.choice = 1
         self.v_layout = QVBoxLayout()
-        self.grid_layout_of_slider = QGridLayout()
-
 
         self.label_1 = QLabel("test 1 ")
-        self.label_1.setMinimumSize(350,300)
+        # self.label_1.setMinimumSize(350,300)
         self.v_layout.addWidget(self.label_1)
 
         self.check_of_output_1 = QCheckBox("show")
@@ -166,7 +144,7 @@ class OutputImageUi:
         self.v_layout.addWidget(self.seprator_1)
         
         self.label_2 = QLabel("test 2")
-        self.label_2.setMinimumSize(350,300)
+        # self.label_2.setMinimumSize(350,300)
         self.v_layout.addWidget(self.label_2)
 
         self.check_of_output_2 = QCheckBox("show")
@@ -178,46 +156,26 @@ class OutputImageUi:
         self.v_layout.addWidget(self.seprator_2)
         
         
-        # self.slider_magnitude = QSlider(Qt.Vertical)
-        # self.slider_magnitude.setFixedHeight(100)
-        # self.grid_layout_of_slider.addWidget(self.slider_magnitude, 0, 0)
-        # self.label_of_magnitude = QLabel("magnitude")
-        # self.grid_layout_of_slider.addWidget(self.label_of_magnitude, 1, 0)
+        self.ft_pairs_combobox = QComboBox()
+        self.ft_pairs_combobox.addItems(["Magnitude and Phase", "Real and Imaginary"])
 
-        # self.slider_phase = QSlider(Qt.Vertical)
-        # self.slider_phase.setFixedHeight(100)
-        # self.grid_layout_of_slider.addWidget(self.slider_phase, 0, 1)
-        # self.label_of_phase = QLabel("phase")
-        # self.grid_layout_of_slider.addWidget(self.label_of_phase, 1, 1)
-
-        # self.slider_real = QSlider(Qt.Vertical)
-        # self.slider_real.setFixedHeight(100)
-        # self.grid_layout_of_slider.addWidget(self.slider_real, 0, 2)
-        # self.label_of_real = QLabel("real")
-        # self.grid_layout_of_slider.addWidget(self.label_of_real, 1, 2)
-
-        # self.slider_imaginary = QSlider(Qt.Vertical)
-        # self.slider_imaginary.setFixedHeight(100)
-        # self.grid_layout_of_slider.addWidget(self.slider_imaginary, 0, 3)
-        # self.label_of_imaginary = QLabel("imaginary")
-        # self.grid_layout_of_slider.addWidget(self.label_of_imaginary, 1, 3)
-
-        
-        # self.v_layout.addLayout(self.grid_layout_of_slider)
-        
+        self.ft_pairs_label = QLabel("FT Pairs:")
 
         h_layout_of_mix_and_region = QHBoxLayout()
         self.mix_button = QPushButton("Mix")
-        self.mix_button.setFixedWidth(100)
+        # self.mix_button.setFixedWidth(100)
         h_layout_of_mix_and_region.addWidget(self.mix_button)
 
         self.slider_reigon = QSlider(Qt.Horizontal)
         self.slider_reigon.setFixedWidth(200)
         h_layout_of_mix_and_region.addWidget(self.slider_reigon)
 
-        self.label_of_reigon = QLabel("reigon")
-        self.label_of_reigon.setFixedWidth(100)
+        self.label_of_reigon = QLabel("Reigon")
+        # self.label_of_reigon.setFixedWidth(100)
+
         h_layout_of_mix_and_region.addWidget(self.label_of_reigon)
+        h_layout_of_mix_and_region.addWidget(self.ft_pairs_label)
+        h_layout_of_mix_and_region.addWidget(self.ft_pairs_combobox)
 
         self.v_layout.addLayout(h_layout_of_mix_and_region)
         
