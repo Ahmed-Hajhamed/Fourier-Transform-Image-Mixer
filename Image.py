@@ -11,11 +11,31 @@ class Image:
         self.brightness = 0
         self.image_label = image_label
 
+    def normalize_to_8bit(self, array):
+        norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
+        return norm
+    
+    def array_to_pixmap(self, array):
+        # Ensure the array is in the right dtype
+        # if array.dtype != np.uint8:
+        #     raise ValueError("Array must be of type uint8.")
+
+        height, width = array.shape
+        bytes_per_line = width
+        # Convert the array to bytes
+        image_data = array.tobytes()
+        # Create a QImage
+        qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
+        # Convert the QImage to QPixmap
+        return QPixmap.fromImage(qimage)
+    
     def update_display(self):
         """Update the displayed image based on brightness and contrast adjustments."""
-        height, width = self.image.shape
-        q_image = QImage(self.image.data, width, height, width, QImage.Format_Grayscale8)
-        pixmap = QPixmap.fromImage(q_image)
+        # image_8bit = self.normalize_to_8bit(self.image)
+        pixmap = self.array_to_pixmap(self.image)
+        # height, width = self.image.shape
+        # q_image = QImage(self.image.data, width, height, width, QImage.Format_Grayscale8)
+        # pixmap = QPixmap.fromImage(q_image)
         self.image_label.setPixmap(pixmap)
 
     def load_image(self, image_path= None):
@@ -45,10 +65,11 @@ class Image:
         self.phase_spectrum = np.angle(self.ft_shifted)
         self.real_component = np.real(self.ft_shifted)
         self.imaginary_component = np.imag(self.ft_shifted)
-
         self.update_display()
+        
     def compute_magnitude_phase(self):
         self.magnitude_spectrum = np.sqrt(self.real_component**2 + self.imaginary_component**2)
+        self.magnitude_log = np.log1p(self.magnitude_spectrum)
         self.phase_spectrum = np.arctan2(self.imaginary_component, self.real_component)
 
     def compute_real_imaginary_parts(self):
@@ -68,15 +89,20 @@ class Image:
         self.update_display()
 
     def modify_magnitude(self, gain):
-        self.magnitude_spectrum= self.magnitude_spectrum * gain 
+        gain = gain /100
+        self.magnitude_spectrum = self.magnitude_spectrum * gain 
         self.ft_shifted = self.magnitude_spectrum * np.exp(1j * self.phase_spectrum)
+        self.magnitude_log = np.log1p(self.magnitude_spectrum)
         self.compute_real_imaginary_parts()
+        self.reconstruct_image()
 
     def modify_phase(self, angle_in_degrees):
+        angle_in_degrees = angle_in_degrees/100
         shift_in_rad = angle_in_degrees * np.pi / 180.0
         self.phase_spectrum = self.phase_spectrum + shift_in_rad 
         self.ft_shifted = self.magnitude_spectrum * np.exp(1j * self.phase_spectrum)
         self.compute_real_imaginary_parts()
+        self.reconstruct_image()
 
     def modify_real_parts(self, gain):
         self.real_component *= gain
@@ -132,8 +158,9 @@ class Image:
     def reconstruct_image(self):
         ft_inverse_shift = np.fft.ifftshift(self.ft_shifted)
 
-        self.reconstructed_image = np.fft.ifft2(ft_inverse_shift)
-        self.reconstructed_image = np.abs(self.reconstructed_image)
+        self.image = np.fft.ifft2(ft_inverse_shift)
+        self.image = np.abs(self.image)
+        self.update_display()
 
         # self.reconstructed_image = np.clip(self.reconstructed_image, 0, 1)
         
