@@ -6,6 +6,7 @@ from qt_material import apply_stylesheet
 from UI import Ui_MainWindow
 from Image import Image
 import numpy as np
+
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
