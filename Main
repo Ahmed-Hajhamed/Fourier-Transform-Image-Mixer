@@ -6,6 +6,7 @@ from qt_material import apply_stylesheet
 from UI import Ui_MainWindow
 from Image import Image
 import numpy as np
+from ImageMixingWorker import ImageMixingWorker
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -49,13 +50,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.worker.start()
 
     def update_progress_bar(self, value):
-        self.ui.progressBar.setValue(value)  # Update the progress bar
+        self.progress_bar.setValue(value)  # Update the progress bar
 
     def display_mixed_image(self, mixed_image):
         mixed_8bit = self.normalize_to_8bit(mixed_image)
         mixed_pixmap = self.array_to_pixmap(mixed_8bit)
         self.output_1_label.setPixmap(mixed_pixmap)
-        self.ui.progressBar.setValue(0)  # Reset progress bar
+        self.progress_bar.setValue(0)  # Reset progress bar
 
     # def mix_images(self, images):
     #         self.output_1_image.magnitude_spectrum  = np.zeros_like(self.images[0].image.magnitude_spectrum, dtype=np.float64)

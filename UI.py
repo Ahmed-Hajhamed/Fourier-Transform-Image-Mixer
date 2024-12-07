@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLabel, QProgressBar
 from PyQt5.QtCore import pyqtSignal, QPoint
 from PyQt5.QtCore import Qt
 from Image import Image
@@ -317,7 +317,14 @@ class Ui_MainWindow(object):
         self.line_9.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_9.setObjectName("line_9")
         self.main_controls_layout.addWidget(self.line_9, 0, 1, 1, 1)
+
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 100) 
+        self.progress_bar.setValue(0)
+        self.main_controls_layout.addWidget(self.progress_bar, 1, 0, 0 , 4)
+
         self.gridLayout_4.addLayout(self.main_controls_layout, 3, 2, 1, 1)
+
         self.line = QtWidgets.QFrame(self.centralwidget)
         self.line.setFrameShape(QtWidgets.QFrame.VLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
