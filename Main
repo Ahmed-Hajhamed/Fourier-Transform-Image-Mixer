@@ -12,6 +12,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.output_label = self.output_1_label
+        self.reconstruction_pair = "Magnitude and Phase"
 
     def change_ft_component(self, image, ft_label):
         combo_box = self.sender()
@@ -42,7 +43,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.worker.cancel()
             self.worker.wait()
 
-        self.worker = ImageMixingWorker(images)
+        self.worker = ImageMixingWorker(images, self.reconstruction_pair)
         self.worker.progress.connect(self.update_progress_bar)
         self.worker.result_ready.connect(self.display_mixed_image)
 
@@ -57,31 +58,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.output_label.setPixmap(mixed_pixmap)
         self.progress_bar.setValue(0)
 
-    # def mix_images(self, images):
-    #         self.output_1_image.magnitude_spectrum  = np.zeros_like(self.images[0].image.magnitude_spectrum, dtype=np.float64)
-    #         self.output_1_image.phase_spectrum = np.zeros_like(self.images[0].image.phase_spectrum, dtype=np.float64)
-    #         self.output_1_image.real_component = np.zeros_like(self.images[0].image.real_component, dtype=np.float64)
-    #         self.output_1_image.imaginary_component = np.zeros_like(self.images[0].image.imaginary_component, dtype=np.float64)
-            
-    #         for image in images:
-    #             if image is not None:
-    #                 self.output_1_image.magnitude_spectrum = self.output_1_image.magnitude_spectrum  + image.image.magnitude_spectrum*image.magnitude_real_slider.value()/100
-    #                 self.output_1_image.phase_spectrum  = self.output_1_image.phase_spectrum  + image.image.phase_spectrum*image.phase_imaginary_slider.value()/100
-    #                 self.output_1_image.real_component = self.output_1_image.real_component  + image.image.real_component*image.magnitude_real_slider.value()/100
-    #                 self.output_1_image.imaginary_component  = self.output_1_image.imaginary_component  + image.image.imaginary_component*image.phase_imaginary_slider.value()/100
+    def change_reconstruction_pairs(self, images):
+        self.reconstruction_pair = self.ft_pairs_combobox.currentText()
+        pairs = [["Magnitude", "Phase"], ["Real", "Imaginary"]]
+        for image in images:
+            image.magnitude_real_label.setText(pairs[self.ft_pairs_combobox.currentIndex()][0])
+            image.phase_imaginary_label.setText(pairs[self.ft_pairs_combobox.currentIndex()][1])
+            image.magnitude_real_slider.setValue(100)
+            image.phase_imaginary_slider.setValue(100)
 
-    #         # self.output_1_image.ft_shifted = self.output_1_image.real_component  + 1j * self.output_1_image.imaginary_component
-    #         self.output_1_image.ft_shifted = self.output_1_image.magnitude_spectrum/4  *  np.exp(1j * self.output_1_image.phase_spectrum/4)
-    #         self.output_1_image.reconstruct_image()
-    #         mixed_8bit = self.normalize_to_8bit(self.output_1_image.image)
-    #         mixed_pixmap = self.array_to_pixmap(mixed_8bit)
-    #         self.output_1_label.setPixmap(mixed_pixmap)
-    
     def switch_output_label(self):
         if self.output_1_radiobutton.isChecked():
             self.output_label = self.output_1_label
         else:
-            # self.output_2_radiobutton.isChecked()
             self.output_label = self.output_2_label
 
     def normalize_to_8bit(self, array):

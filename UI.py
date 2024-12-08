@@ -3,53 +3,24 @@ from PyQt5.QtWidgets import QLabel, QProgressBar
 from PyQt5.QtCore import pyqtSignal, QPoint
 from PyQt5.QtCore import Qt
 from Image import Image
-# class ImageLabel(QLabel):
-#     doubleClicked = pyqtSignal()  # Define a custom signal
-#     mousePressed = pyqtSignal()
-#     mouseMoved = pyqtSignal(QPoint)
-
-#     def __init__(self, label_id, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-#         self.last_mouse_pos = QPoint(0, 0)
-#         self.label_id = label_id 
-
-#     def mouseDoubleClickEvent(self, event):
-#         if event.button() == Qt.LeftButton:
-#             self.doubleClicked.emit()
-
-
-#     def mousePressEvent(self, event):
-#         if event.button() == Qt.LeftButton:
-#             self.last_mouse_pos = event.pos()
-#             self.mousePressed.emit()
-
-#     def mouseMoveEvent(self, event):
-#         if event.buttons() & Qt.LeftButton:
-#             delta = event.pos() - self.last_mouse_pos
-#             self.last_mouse_pos = event.pos()
-#             self.mouseMoved.emit(delta)
-#             new_brightness = self.initial_brightness - delta.y() /10
-#             new_contrast = max(0.1, self.initial_contrast + delta.x()/10 * 0.01)  # Prevent zero or negative contrast
-
-#             brightness_min, brightness_max = -50, 50  # Set brightness limits
-#             contrast_min, contrast_max = 0.5, 2.0  
-
-#             self.image.brightness = max(brightness_min, min(brightness_max, new_brightness))
-#             self.image.contrast = max(contrast_min, min(contrast_max, new_contrast))
-
-#             self.image.adjust_brightness_contrast()
-#             # self.image.update_display()
 
 class ImageLabel(QLabel):
-    def __init__(self, magnitude_real_slider, phase_imaginary_slider, parent=None):
+    def __init__(self, magnitude_real_slider, phase_imaginary_slider, image_ft_label,
+                        magnitude_real_label, phase_imaginary_label, parent=None):
         super().__init__(parent)
         self.image = Image(self)
-        # self.image.image_label = self
+        self.image.load_image("imgaes\IMG_20230807_000054_971.jpg")
         self.last_mouse_pos = QPoint()
+        self.ft_label = image_ft_label
         self.magnitude_real_slider = magnitude_real_slider
         self.phase_imaginary_slider = phase_imaginary_slider
+        self.magnitude_real_label = magnitude_real_label
+        self.phase_imaginary_label = phase_imaginary_label
+        self.magnitude_real_label.setText("Magnitude")
+        self.phase_imaginary_label.setText("Phase")
+
         self.magnitude_real_slider.setMinimum(10)
-        self.magnitude_real_slider.setMaximum(600)
+        self.magnitude_real_slider.setMaximum(200)
         self.magnitude_real_slider.setValue(100)
         self.magnitude_real_slider.setMaximumWidth(200)
 
@@ -57,15 +28,13 @@ class ImageLabel(QLabel):
         self.phase_imaginary_slider.setMaximum(200)
         self.phase_imaginary_slider.setValue(100)
         self.phase_imaginary_slider.setMaximumWidth(200)
+        self.setFixedSize(300,400)
+        self.ft_label.setFixedSize(300,400)
         self.setScaledContents(True)
-    
+
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
-            # Open file dialog on double-click
             self.image.load_image()
-            self.image.resize_image(400, 500)
-            # self.image.update_display()
-
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -92,6 +61,9 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1233, 799)
+
+        ft_combobox_components = ["Magnitude", "Phase", "Real", "Imaginary"]
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_4 = QtWidgets.QGridLayout(self.centralwidget)
@@ -115,135 +87,157 @@ class Ui_MainWindow(object):
         self.gridLayout_4.addLayout(self.image_1_2_h_layout, 0, 0, 1, 1)
         self.image_3_4_controls_layout = QtWidgets.QGridLayout()
         self.image_3_4_controls_layout.setObjectName("image_3_4_controls_layout")
+
         self.line_6 = QtWidgets.QFrame(self.centralwidget)
         self.line_6.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_6.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_6.setObjectName("line_6")
         self.image_3_4_controls_layout.addWidget(self.line_6, 0, 5, 2, 1)
+
         self.line_12 = QtWidgets.QFrame(self.centralwidget)
         self.line_12.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_12.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_12.setObjectName("line_12")
         self.image_3_4_controls_layout.addWidget(self.line_12, 0, 2, 2, 1)
+
         self.image_3_ft_combobox = QtWidgets.QComboBox(self.centralwidget)
         self.image_3_ft_combobox.setObjectName("image_3_ft_combobox")
-        self.image_3_ft_combobox.addItem("")
-        self.image_3_ft_combobox.addItem("")
-        self.image_3_ft_combobox.addItem("")
-        self.image_3_ft_combobox.addItem("")
+        self.image_3_ft_combobox.addItems(ft_combobox_components)
         self.image_3_4_controls_layout.addWidget(self.image_3_ft_combobox, 0, 4, 2, 1)
+
         self.image_4_ft_combobox = QtWidgets.QComboBox(self.centralwidget)
         self.image_4_ft_combobox.setObjectName("image_4_ft_combobox")
-        self.image_4_ft_combobox.addItem("")
-        self.image_4_ft_combobox.addItem("")
-        self.image_4_ft_combobox.addItem("")
-        self.image_4_ft_combobox.addItem("")
+        self.image_4_ft_combobox.addItems(ft_combobox_components)
+
         self.image_3_4_controls_layout.addWidget(self.image_4_ft_combobox, 0, 10, 2, 1)
+
         self.image_3_ft_combobox_label = QtWidgets.QLabel(self.centralwidget)
         self.image_3_ft_combobox_label.setObjectName("image_3_ft_combobox_label")
         self.image_3_4_controls_layout.addWidget(self.image_3_ft_combobox_label, 0, 3, 2, 1)
+
         self.image_4_ft_combobox_label = QtWidgets.QLabel(self.centralwidget)
         self.image_4_ft_combobox_label.setObjectName("image_4_ft_combobox_label")
         self.image_3_4_controls_layout.addWidget(self.image_4_ft_combobox_label, 0, 9, 2, 1)
+
         self.image_4_magnitude_real_label = QtWidgets.QLabel(self.centralwidget)
         self.image_4_magnitude_real_label.setObjectName("image_4_magnitude_real_label")
         self.image_3_4_controls_layout.addWidget(self.image_4_magnitude_real_label, 0, 6, 1, 1)
+
         self.image_3_magnitude_real_slider = QtWidgets.QSlider(self.centralwidget)
         self.image_3_magnitude_real_slider.setOrientation(QtCore.Qt.Horizontal)
         self.image_3_magnitude_real_slider.setObjectName("image_3_magnitude_real_slider")
         self.image_3_4_controls_layout.addWidget(self.image_3_magnitude_real_slider, 0, 1, 1, 1)
+
         self.image_4_phase_imaginary_slider = QtWidgets.QSlider(self.centralwidget)
         self.image_4_phase_imaginary_slider.setOrientation(QtCore.Qt.Horizontal)
         self.image_4_phase_imaginary_slider.setObjectName("image_4_phase_imaginary_slider")
         self.image_3_4_controls_layout.addWidget(self.image_4_phase_imaginary_slider, 1, 7, 1, 1)
+
         self.image_3_magnitude_real_label = QtWidgets.QLabel(self.centralwidget)
         self.image_3_magnitude_real_label.setObjectName("image_3_magnitude_real_label")
         self.image_3_4_controls_layout.addWidget(self.image_3_magnitude_real_label, 0, 0, 1, 1)
+
         self.image_4_magnitude_real_slider = QtWidgets.QSlider(self.centralwidget)
         self.image_4_magnitude_real_slider.setOrientation(QtCore.Qt.Horizontal)
         self.image_4_magnitude_real_slider.setObjectName("image_4_magnitude_real_slider")
         self.image_3_4_controls_layout.addWidget(self.image_4_magnitude_real_slider, 0, 7, 1, 1)
+
         self.image_3_phase_imaginary_slider = QtWidgets.QSlider(self.centralwidget)
         self.image_3_phase_imaginary_slider.setOrientation(QtCore.Qt.Horizontal)
         self.image_3_phase_imaginary_slider.setObjectName("image_3_phase_imaginary_slider")
         self.image_3_4_controls_layout.addWidget(self.image_3_phase_imaginary_slider, 1, 1, 1, 1)
+
         self.image_4_phase_imaginary_label = QtWidgets.QLabel(self.centralwidget)
         self.image_4_phase_imaginary_label.setObjectName("image_4_phase_imaginary_label")
         self.image_3_4_controls_layout.addWidget(self.image_4_phase_imaginary_label, 1, 6, 1, 1)
+
         self.image_3_phase_imaginary_label = QtWidgets.QLabel(self.centralwidget)
         self.image_3_phase_imaginary_label.setObjectName("image_3_phase_imaginary_label")
         self.image_3_4_controls_layout.addWidget(self.image_3_phase_imaginary_label, 1, 0, 1, 1)
+
         self.line_13 = QtWidgets.QFrame(self.centralwidget)
         self.line_13.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_13.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_13.setObjectName("line_13")
         self.image_3_4_controls_layout.addWidget(self.line_13, 0, 8, 2, 1)
+
         self.gridLayout_4.addLayout(self.image_3_4_controls_layout, 3, 0, 1, 1)
         self.image_1_2_controls_layout = QtWidgets.QGridLayout()
         self.image_1_2_controls_layout.setObjectName("image_1_2_controls_layout")
+
         self.line_10 = QtWidgets.QFrame(self.centralwidget)
         self.line_10.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_10.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_10.setObjectName("line_10")
         self.image_1_2_controls_layout.addWidget(self.line_10, 0, 2, 2, 1)
+
         self.image_1_magnitude_real_slider = QtWidgets.QSlider(self.centralwidget)
         self.image_1_magnitude_real_slider.setOrientation(QtCore.Qt.Horizontal)
         self.image_1_magnitude_real_slider.setObjectName("image_1_magnitude_real_slider")
         self.image_1_2_controls_layout.addWidget(self.image_1_magnitude_real_slider, 0, 1, 1, 1)
+
         self.image_2_ft_combobox_label = QtWidgets.QLabel(self.centralwidget)
         self.image_2_ft_combobox_label.setObjectName("image_2_ft_combobox_label")
         self.image_1_2_controls_layout.addWidget(self.image_2_ft_combobox_label, 0, 9, 2, 1)
+
         self.image_2_magnitude_real_label = QtWidgets.QLabel(self.centralwidget)
         self.image_2_magnitude_real_label.setObjectName("image_2_magnitude_real_label")
         self.image_1_2_controls_layout.addWidget(self.image_2_magnitude_real_label, 0, 6, 1, 1)
+
         self.image_2_phase_imaginary_label = QtWidgets.QLabel(self.centralwidget)
         self.image_2_phase_imaginary_label.setObjectName("image_2_phase_imaginary_label")
         self.image_1_2_controls_layout.addWidget(self.image_2_phase_imaginary_label, 1, 6, 1, 1)
+
         self.image_1_magnitude_real_label = QtWidgets.QLabel(self.centralwidget)
         self.image_1_magnitude_real_label.setObjectName("image_1_magnitude_real_label")
         self.image_1_2_controls_layout.addWidget(self.image_1_magnitude_real_label, 0, 0, 1, 1)
+
         self.image_1_phase_imaginary_label = QtWidgets.QLabel(self.centralwidget)
         self.image_1_phase_imaginary_label.setObjectName("image_1_phase_imaginary_label")
         self.image_1_2_controls_layout.addWidget(self.image_1_phase_imaginary_label, 1, 0, 1, 1)
+
         self.image_2_phase_imaginary_slider = QtWidgets.QSlider(self.centralwidget)
         self.image_2_phase_imaginary_slider.setOrientation(QtCore.Qt.Horizontal)
         self.image_2_phase_imaginary_slider.setObjectName("image_2_phase_imaginary_slider")
         self.image_1_2_controls_layout.addWidget(self.image_2_phase_imaginary_slider, 1, 7, 1, 1)
+
         self.image_1_phase_imaginary_slider = QtWidgets.QSlider(self.centralwidget)
         self.image_1_phase_imaginary_slider.setOrientation(QtCore.Qt.Horizontal)
         self.image_1_phase_imaginary_slider.setObjectName("image_1_phase_imaginary_slider")
         self.image_1_2_controls_layout.addWidget(self.image_1_phase_imaginary_slider, 1, 1, 1, 1)
+
         self.image_2_ft_combobox = QtWidgets.QComboBox(self.centralwidget)
         self.image_2_ft_combobox.setObjectName("image_2_ft_combobox")
-        self.image_2_ft_combobox.addItem("")
-        self.image_2_ft_combobox.addItem("")
-        self.image_2_ft_combobox.addItem("")
-        self.image_2_ft_combobox.addItem("")
+        self.image_2_ft_combobox.addItems(ft_combobox_components)
         self.image_1_2_controls_layout.addWidget(self.image_2_ft_combobox, 0, 10, 2, 1)
+
         self.image_2_magnitude_real_slider = QtWidgets.QSlider(self.centralwidget)
         self.image_2_magnitude_real_slider.setOrientation(QtCore.Qt.Horizontal)
         self.image_2_magnitude_real_slider.setObjectName("image_2_magnitude_real_slider")
         self.image_1_2_controls_layout.addWidget(self.image_2_magnitude_real_slider, 0, 7, 1, 1)
+
         self.image_1_ft_combobox = QtWidgets.QComboBox(self.centralwidget)
         self.image_1_ft_combobox.setObjectName("image_1_ft_combobox")
-        self.image_1_ft_combobox.addItem("")
-        self.image_1_ft_combobox.addItem("")
-        self.image_1_ft_combobox.addItem("")
-        self.image_1_ft_combobox.addItem("")
+        self.image_1_ft_combobox.addItems(ft_combobox_components)
+
         self.image_1_2_controls_layout.addWidget(self.image_1_ft_combobox, 0, 4, 2, 1)
+
         self.image_1_ft_combobox_label = QtWidgets.QLabel(self.centralwidget)
         self.image_1_ft_combobox_label.setObjectName("image_1_ft_combobox_label")
         self.image_1_2_controls_layout.addWidget(self.image_1_ft_combobox_label, 0, 3, 2, 1)
+
         self.line_4 = QtWidgets.QFrame(self.centralwidget)
         self.line_4.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_4.setObjectName("line_4")
         self.image_1_2_controls_layout.addWidget(self.line_4, 0, 5, 2, 1)
+
         self.line_11 = QtWidgets.QFrame(self.centralwidget)
         self.line_11.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_11.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_11.setObjectName("line_11")
         self.image_1_2_controls_layout.addWidget(self.line_11, 0, 8, 2, 1)
+
         self.gridLayout_4.addLayout(self.image_1_2_controls_layout, 1, 0, 1, 1)
         self.image_2_3_h_layout = QtWidgets.QHBoxLayout()
         self.image_2_3_h_layout.setObjectName("image_2_3_h_layout")
@@ -302,25 +296,30 @@ class Ui_MainWindow(object):
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName("line_2")
         self.output_v_layout.addWidget(self.line_2)
+
         self.gridLayout_4.addLayout(self.output_v_layout, 0, 2, 3, 1)
         self.main_controls_layout = QtWidgets.QGridLayout()
         self.main_controls_layout.setObjectName("main_controls_layout")
+
         self.line_7 = QtWidgets.QFrame(self.centralwidget)
         self.line_7.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_7.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_7.setObjectName("line_7")
         self.main_controls_layout.addWidget(self.line_7, 0, 4, 1, 1)
+
         self.select_region_label = QtWidgets.QLabel(self.centralwidget)
         self.select_region_label.setObjectName("select_region_label")
         self.main_controls_layout.addWidget(self.select_region_label, 0, 2, 1, 1)
+
         self.select_region_label_2 = QtWidgets.QSlider(self.centralwidget)
         self.select_region_label_2.setOrientation(QtCore.Qt.Horizontal)
         self.select_region_label_2.setObjectName("select_region_label_2")
         self.main_controls_layout.addWidget(self.select_region_label_2, 0, 3, 1, 1)
+
         self.ft_pairs_combobox = QtWidgets.QComboBox(self.centralwidget)
         self.ft_pairs_combobox.setObjectName("ft_pairs_combobox")
-        self.ft_pairs_combobox.addItem("")
-        self.ft_pairs_combobox.addItem("")
+        self.ft_pairs_combobox.addItems(["Magnitude and Phase", "Real and Imaginary"])
+
         self.main_controls_layout.addWidget(self.ft_pairs_combobox, 0, 6, 1, 1)
         self.mix_button = QtWidgets.QPushButton(self.centralwidget)
         self.mix_button.setObjectName("mix_button")
@@ -352,27 +351,31 @@ class Ui_MainWindow(object):
         self.line.setObjectName("line")
         self.gridLayout_4.addWidget(self.line, 0, 1, 4, 1)
 
-        self.image_1_label = ImageLabel(self.image_1_magnitude_real_slider, self.image_1_phase_imaginary_slider, self.centralwidget)
+        self.image_1_label = ImageLabel(self.image_1_magnitude_real_slider, self.image_1_phase_imaginary_slider,
+                                        self.image_1_ft_label, self.image_1_magnitude_real_label, self.image_1_phase_imaginary_label, self.centralwidget)
         self.image_1_label.setText("")
         self.image_1_label.setObjectName("image_1_label")
         self.image_1_2_h_layout.addWidget(self.image_1_label)
         self.image_1_2_h_layout.addWidget(self.image_1_ft_label)
         self.image_1_2_h_layout.addWidget(self.line_3)
 
-        self.image_2_label = ImageLabel(self.image_2_magnitude_real_slider, self.image_2_phase_imaginary_slider, self.centralwidget)
+        self.image_2_label = ImageLabel(self.image_2_magnitude_real_slider, self.image_2_phase_imaginary_slider,
+                                        self.image_2_ft_label, self.image_2_magnitude_real_label, self.image_2_phase_imaginary_label, self.centralwidget)
         self.image_2_label.setText("")
         self.image_2_label.setObjectName("image_2_label")
         self.image_1_2_h_layout.addWidget(self.image_2_label)
         self.image_1_2_h_layout.addWidget(self.image_2_ft_label)
 
-        self.image_3_label = ImageLabel(self.image_3_magnitude_real_slider, self.image_3_phase_imaginary_slider, self.centralwidget)
+        self.image_3_label = ImageLabel(self.image_3_magnitude_real_slider, self.image_3_phase_imaginary_slider,
+                                        self.image_3_ft_label, self.image_3_magnitude_real_label, self.image_3_phase_imaginary_label, self.centralwidget)
         self.image_3_label.setText("")
         self.image_3_label.setObjectName("image_3_label")
         self.image_2_3_h_layout.addWidget(self.image_3_label)
         self.image_2_3_h_layout.addWidget(self.image_3_ft_label)
         self.image_2_3_h_layout.addWidget(self.line_5)
 
-        self.image_4_label = ImageLabel(self.image_4_magnitude_real_slider, self.image_4_phase_imaginary_slider, self.centralwidget)
+        self.image_4_label = ImageLabel(self.image_4_magnitude_real_slider, self.image_4_phase_imaginary_slider,
+                                        self.image_4_ft_label, self.image_4_magnitude_real_label, self.image_4_phase_imaginary_label, self.centralwidget)
         self.image_4_label.setText("")
         self.image_4_label.setObjectName("image_4_label")
         self.image_2_3_h_layout.addWidget(self.image_4_label)
@@ -382,6 +385,8 @@ class Ui_MainWindow(object):
                          self.image_3_label, self.image_4_label]
 
         self.mix_button.clicked.connect(lambda: MainWindow.mix_images(self.images))
+
+        self.ft_pairs_combobox.currentIndexChanged.connect(lambda:MainWindow.change_reconstruction_pairs(self.images))
 
         self.image_1_ft_combobox.currentIndexChanged.connect(lambda:MainWindow.change_ft_component(self.image_1_label.image, 
                                                                                             self.image_1_ft_label))
@@ -394,38 +399,12 @@ class Ui_MainWindow(object):
         
         self.image_4_ft_combobox.currentIndexChanged.connect(lambda:MainWindow.change_ft_component(self.image_4_label.image, 
                                                                                             self.image_4_ft_label))
-        
-        # self.image_1_magnitude_real_slider.valueChanged.connect(self.image_1_label.image.modify_magnitude)
-        # self.image_2_magnitude_real_slider.valueChanged.connect(self.image_2_label.image.modify_magnitude)
-        # self.image_3_magnitude_real_slider.valueChanged.connect(self.image_3_label.image.modify_magnitude)
-        # self.image_4_magnitude_real_slider.valueChanged.connect(self.image_4_label.image.modify_magnitude)
-
-        # self.image_1_phase_imaginary_slider.valueChanged.connect(self.image_1_label.image.modify_phase)
-        # self.image_2_phase_imaginary_slider.valueChanged.connect(self.image_2_label.image.modify_phase)
-        # self.image_3_phase_imaginary_slider.valueChanged.connect(self.image_3_label.image.modify_phase)
-        # self.image_4_phase_imaginary_slider.valueChanged.connect(self.image_4_label.image.modify_phase)
-
-
-
-        self.image_1_ft_label.setFixedSize(300,400)
-        self.image_2_ft_label.setFixedSize(300,400)
-        self.image_3_ft_label.setFixedSize(300,400)
-        self.image_4_ft_label.setFixedSize(300,400)
-
-        self.image_1_label.setFixedSize(300,400)
-        self.image_2_label.setFixedSize(300,400)
-        self.image_3_label.setFixedSize(300,400)
-        self.image_4_label.setFixedSize(300,400)
 
         self.output_1_label.setScaledContents(True)
         self.output_2_label.setScaledContents(True)
         
         self.output_1_label.setFixedSize(300, 400)
         self.output_2_label.setFixedSize(300, 400)
-
-        # self.output_1_label.setFixedSize(300, 400)
-        # self.output_2_label.setFixedSize(300, 400)
-
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -438,48 +417,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("FT Image Mixer", "FT Image Mixer"))
-        self.image_3_ft_combobox.setItemText(0, _translate("MainWindow", "Magnitude"))
-        self.image_3_ft_combobox.setItemText(1, _translate("MainWindow", "Phase"))
-        self.image_3_ft_combobox.setItemText(2, _translate("MainWindow", "Real"))
-        self.image_3_ft_combobox.setItemText(3, _translate("MainWindow", "Imaginary"))
-        self.image_4_ft_combobox.setItemText(0, _translate("MainWindow", "Magnitude"))
-        self.image_4_ft_combobox.setItemText(1, _translate("MainWindow", "Phase"))
-        self.image_4_ft_combobox.setItemText(2, _translate("MainWindow", "Real"))
-        self.image_4_ft_combobox.setItemText(3, _translate("MainWindow", "Imaginary"))
         self.image_3_ft_combobox_label.setText(_translate("MainWindow", "FT Component"))
         self.image_4_ft_combobox_label.setText(_translate("MainWindow", "FT Component"))
-        self.image_4_magnitude_real_label.setText(_translate("MainWindow", "Magnitude"))
-        self.image_3_magnitude_real_label.setText(_translate("MainWindow", "Magnitude"))
-        self.image_4_phase_imaginary_label.setText(_translate("MainWindow", "Phase"))
-        self.image_3_phase_imaginary_label.setText(_translate("MainWindow", "Phase"))
         self.image_2_ft_combobox_label.setText(_translate("MainWindow", "FT Componet"))
-        self.image_2_magnitude_real_label.setText(_translate("MainWindow", "Magnitude"))
-        self.image_2_phase_imaginary_label.setText(_translate("MainWindow", "Phase"))
-        self.image_1_magnitude_real_label.setText(_translate("MainWindow", "Magnitude"))
-        self.image_1_phase_imaginary_label.setText(_translate("MainWindow", "Phase"))
-        self.image_2_ft_combobox.setItemText(0, _translate("MainWindow", "Magnitude"))
-        self.image_2_ft_combobox.setItemText(1, _translate("MainWindow", "Phase"))
-        self.image_2_ft_combobox.setItemText(2, _translate("MainWindow", "Real"))
-        self.image_2_ft_combobox.setItemText(3, _translate("MainWindow", "Imaginary"))
-        self.image_1_ft_combobox.setItemText(0, _translate("MainWindow", "Magnitude"))
-        self.image_1_ft_combobox.setItemText(1, _translate("MainWindow", "Phase"))
-        self.image_1_ft_combobox.setItemText(2, _translate("MainWindow", "Real"))
-        self.image_1_ft_combobox.setItemText(3, _translate("MainWindow", "Imaginary"))
         self.image_1_ft_combobox_label.setText(_translate("MainWindow", "FT Component"))
         self.output_1_radiobutton.setText(_translate("MainWindow", "Show"))
         self.output_2_radiobutton.setText(_translate("MainWindow", "Show"))
         self.select_region_label.setText(_translate("MainWindow", "Region:"))
-        self.ft_pairs_combobox.setItemText(0, _translate("MainWindow", "Magnitude and Phase"))
-        self.ft_pairs_combobox.setItemText(1, _translate("MainWindow", "Real and Imaginary"))
         self.mix_button.setText(_translate("MainWindow", "Mix"))
         self.ft_pairs_label.setText(_translate("MainWindow", "FT Pairs"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())

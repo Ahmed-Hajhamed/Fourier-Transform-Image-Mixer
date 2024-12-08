@@ -31,11 +31,7 @@ class Image:
     
     def update_display(self):
         """Update the displayed image based on brightness and contrast adjustments."""
-        # image_8bit = self.normalize_to_8bit(self.image)
         pixmap = self.array_to_pixmap(self.image)
-        # height, width = self.image.shape
-        # q_image = QImage(self.image.data, width, height, width, QImage.Format_Grayscale8)
-        # pixmap = QPixmap.fromImage(q_image)
         self.image_label.setPixmap(pixmap)
 
     def load_image(self, image_path= None):

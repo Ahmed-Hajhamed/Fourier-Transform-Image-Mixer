@@ -5,9 +5,10 @@ class ImageMixingWorker(QThread):
     progress = pyqtSignal(int)  
     result_ready = pyqtSignal(np.ndarray)
 
-    def __init__(self, images):
+    def __init__(self, images, reconstruction_pair):
         super().__init__()
         self.images = images
+        self.reconstruction_pair = reconstruction_pair
         self.is_canceled = False  
 
     def run(self):
@@ -36,7 +37,11 @@ class ImageMixingWorker(QThread):
 
             self.progress.emit((idx + 1) * 100 // num_images) 
 
-        ft_shifted = (magnitude_spectrum / num_images) * np.exp(1j * phase_spectrum / num_images)
+        if self.reconstruction_pair == "Magnitude and Phase":
+            ft_shifted = (magnitude_spectrum / num_images) * np.exp(1j * phase_spectrum / num_images)
+        elif self.reconstruction_pair == "Real and Imaginary":
+            ft_shifted = (real_component / num_images) + 1j * (imaginary_component / num_images)
+
         ft_inverse_shift = np.fft.ifftshift(ft_shifted)
         mixed_image = np.fft.ifft2(ft_inverse_shift)
         mixed_image = np.abs(mixed_image) 
