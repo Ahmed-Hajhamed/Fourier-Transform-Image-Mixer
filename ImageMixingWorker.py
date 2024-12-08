@@ -2,13 +2,13 @@ from PyQt5.QtCore import QThread, pyqtSignal
 import numpy as np
 
 class ImageMixingWorker(QThread):
-    progress = pyqtSignal(int)  # Signal to update the progress bar
-    result_ready = pyqtSignal(np.ndarray)  # Signal for the final mixed image
+    progress = pyqtSignal(int)  
+    result_ready = pyqtSignal(np.ndarray)
 
     def __init__(self, images):
         super().__init__()
         self.images = images
-        self.is_canceled = False  # Flag to cancel operation
+        self.is_canceled = False  
 
     def run(self):
         num_images = len(self.images)
@@ -17,10 +17,9 @@ class ImageMixingWorker(QThread):
         real_component = np.zeros_like(self.images[0].image.real_component, dtype=np.float64)
         imaginary_component = np.zeros_like(self.images[0].image.imaginary_component, dtype=np.float64)
 
-        # Combine images
         for idx, image in enumerate(self.images):
             if self.is_canceled:
-                return  # Stop operation if canceled
+                return  
 
             magnitude_spectrum += (
                 image.image.magnitude_spectrum * image.magnitude_real_slider.value() / 100
@@ -29,19 +28,18 @@ class ImageMixingWorker(QThread):
                 image.image.phase_spectrum * image.phase_imaginary_slider.value() / 100
             )
             real_component += (
-                image.image.magnitude_spectrum * image.magnitude_real_slider.value() / 100
+                image.image.real_component * image.magnitude_real_slider.value() / 100
             )
             imaginary_component += (
-                image.image.phase_spectrum * image.phase_imaginary_slider.value() / 100
+                image.image.imaginary_component * image.phase_imaginary_slider.value() / 100
             )
 
-            self.progress.emit((idx + 1) * 100 // num_images)  # Update progress
+            self.progress.emit((idx + 1) * 100 // num_images) 
 
-        # Perform FFT reconstruction
         ft_shifted = (magnitude_spectrum / num_images) * np.exp(1j * phase_spectrum / num_images)
         ft_inverse_shift = np.fft.ifftshift(ft_shifted)
         mixed_image = np.fft.ifft2(ft_inverse_shift)
-        mixed_image = np.abs(mixed_image)  # Convert complex values to real
+        mixed_image = np.abs(mixed_image) 
 
         self.result_ready.emit(mixed_image)
 

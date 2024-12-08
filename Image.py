@@ -47,25 +47,25 @@ class Image:
                 "", 
                 "All Files (*.*);;Text Files (*.txt);;Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif)"
             )
+        if image_path:
+            self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+            self.resize_image(300, 400)
+            # Normalize to [0, 1]
+            # max_pixel_value = self.image.max() 
+            # self.image = self.image / max_pixel_value
 
-        self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+            self.adjust_brightness_contrast(reset= True)
 
-        # Normalize to [0, 1]
-        # max_pixel_value = self.image.max() 
-        # self.image = self.image / max_pixel_value
+            self.ft = np.fft.fft2(self.image)
+            # Shift the zero-frequency component to the center for better visualization
+            self.ft_shifted = np.fft.fftshift(self.ft)
 
-        self.adjust_brightness_contrast(reset= True)
-
-        self.ft = np.fft.fft2(self.image)
-        # Shift the zero-frequency component to the center for better visualization
-        self.ft_shifted = np.fft.fftshift(self.ft)
-
-        self.magnitude_spectrum = np.abs(self.ft_shifted)
-        self.magnitude_log = np.log1p(self.magnitude_spectrum)  # Use log for better visualization
-        self.phase_spectrum = np.angle(self.ft_shifted)
-        self.real_component = np.real(self.ft_shifted)
-        self.imaginary_component = np.imag(self.ft_shifted)
-        self.update_display()
+            self.magnitude_spectrum = np.abs(self.ft_shifted)
+            self.magnitude_log = np.log1p(self.magnitude_spectrum)  # Use log for better visualization
+            self.phase_spectrum = np.angle(self.ft_shifted)
+            self.real_component = np.real(self.ft_shifted)
+            self.imaginary_component = np.imag(self.ft_shifted)
+            self.update_display()
         
     def compute_magnitude_phase(self):
         self.magnitude_spectrum = np.sqrt(self.real_component**2 + self.imaginary_component**2)

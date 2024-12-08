@@ -48,6 +48,16 @@ class ImageLabel(QLabel):
         self.last_mouse_pos = QPoint()
         self.magnitude_real_slider = magnitude_real_slider
         self.phase_imaginary_slider = phase_imaginary_slider
+        self.magnitude_real_slider.setMinimum(10)
+        self.magnitude_real_slider.setMaximum(600)
+        self.magnitude_real_slider.setValue(100)
+        self.magnitude_real_slider.setMaximumWidth(200)
+
+        self.phase_imaginary_slider.setMinimum(10)
+        self.phase_imaginary_slider.setMaximum(200)
+        self.phase_imaginary_slider.setValue(100)
+        self.phase_imaginary_slider.setMaximumWidth(200)
+        self.setScaledContents(True)
     
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -267,9 +277,12 @@ class Ui_MainWindow(object):
         self.output_2_image = Image(self.output_2_label)
 
         self.output_v_layout.addWidget(self.output_1_label)
-        self.output_1_checkbox = QtWidgets.QCheckBox(self.centralwidget)
-        self.output_1_checkbox.setObjectName("output_1_checkbox")
-        self.output_v_layout.addWidget(self.output_1_checkbox)
+        self.output_1_radiobutton = QtWidgets.QRadioButton(self.centralwidget)
+        self.output_1_radiobutton.setObjectName("output_1_checkbox")
+        self.output_1_radiobutton.setChecked(True)
+        self.output_1_radiobutton.toggled.connect(MainWindow.switch_output_label)
+        self.output_v_layout.addWidget(self.output_1_radiobutton)
+
         self.line_8 = QtWidgets.QFrame(self.centralwidget)
         self.line_8.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_8.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -278,9 +291,12 @@ class Ui_MainWindow(object):
 
 
         self.output_v_layout.addWidget(self.output_2_label)
-        self.output_2_checkbox = QtWidgets.QCheckBox(self.centralwidget)
-        self.output_2_checkbox.setObjectName("output_2_checkbox")
-        self.output_v_layout.addWidget(self.output_2_checkbox)
+        self.output_2_radiobutton = QtWidgets.QRadioButton(self.centralwidget)
+        self.output_2_radiobutton.setObjectName("output_2_checkbox")
+        self.output_2_radiobutton.setChecked(False)
+        self.output_2_radiobutton.toggled.connect(MainWindow.switch_output_label)
+        self.output_v_layout.addWidget(self.output_2_radiobutton)
+
         self.line_2 = QtWidgets.QFrame(self.centralwidget)
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
@@ -318,10 +334,15 @@ class Ui_MainWindow(object):
         self.line_9.setObjectName("line_9")
         self.main_controls_layout.addWidget(self.line_9, 0, 1, 1, 1)
 
-        self.progress_bar = QProgressBar()
+
+        self.progress_label = QLabel("Mixing Progress:")
+
+        self.progress_bar = QProgressBar(self.centralwidget)
         self.progress_bar.setRange(0, 100) 
         self.progress_bar.setValue(0)
-        self.main_controls_layout.addWidget(self.progress_bar, 1, 0, 0 , 4)
+
+        self.main_controls_layout.addWidget(self.progress_label, 1, 0, 1, 1)
+        self.main_controls_layout.addWidget(self.progress_bar, 1, 1, 1, 6)
 
         self.gridLayout_4.addLayout(self.main_controls_layout, 3, 2, 1, 1)
 
@@ -357,36 +378,6 @@ class Ui_MainWindow(object):
         self.image_2_3_h_layout.addWidget(self.image_4_label)
         self.image_2_3_h_layout.addWidget(self.image_4_ft_label)
 
-        self.image_1_magnitude_real_slider.setMinimum(10)
-        self.image_2_magnitude_real_slider.setMinimum(10)
-        self.image_3_magnitude_real_slider.setMaximum(10)
-        self.image_4_magnitude_real_slider.setMinimum(10)
-
-        self.image_1_magnitude_real_slider.setMaximum(200)
-        self.image_2_magnitude_real_slider.setMaximum(200)
-        self.image_3_magnitude_real_slider.setMaximum(200)
-        self.image_4_magnitude_real_slider.setMaximum(200)
-
-        self.image_1_magnitude_real_slider.setValue(100)
-        self.image_2_magnitude_real_slider.setValue(100)
-        self.image_3_magnitude_real_slider.setValue(100)
-        self.image_4_magnitude_real_slider.setValue(100)
-
-        self.image_1_phase_imaginary_slider.setMinimum(10)
-        self.image_2_phase_imaginary_slider.setMinimum(10)
-        self.image_3_phase_imaginary_slider.setMaximum(10)
-        self.image_4_phase_imaginary_slider.setMinimum(10)
-
-        self.image_1_phase_imaginary_slider.setMaximum(200)
-        self.image_2_phase_imaginary_slider.setMaximum(200)
-        self.image_3_phase_imaginary_slider.setMaximum(200)
-        self.image_4_phase_imaginary_slider.setMaximum(200)
-
-        self.image_1_phase_imaginary_slider.setValue(100)
-        self.image_2_phase_imaginary_slider.setValue(100)
-        self.image_3_phase_imaginary_slider.setValue(100)
-        self.image_4_phase_imaginary_slider.setValue(100)
-        
         self.images = [self.image_1_label, self.image_2_label, 
                          self.image_3_label, self.image_4_label]
 
@@ -425,27 +416,15 @@ class Ui_MainWindow(object):
         self.image_2_label.setFixedSize(300,400)
         self.image_3_label.setFixedSize(300,400)
         self.image_4_label.setFixedSize(300,400)
+
+        self.output_1_label.setScaledContents(True)
+        self.output_2_label.setScaledContents(True)
         
+        self.output_1_label.setFixedSize(300, 400)
+        self.output_2_label.setFixedSize(300, 400)
+
         # self.output_1_label.setFixedSize(300, 400)
         # self.output_2_label.setFixedSize(300, 400)
-
-        # self.output_1_label.setFixedSize(400, 400)
-        # self.output_2_label.setFixedSize(400, 400)
-
-        # self.image_1_label.doubleClicked.connect(MainWindow.load_image)
-        # self.image_2_label.doubleClicked.connect(MainWindow.load_image)
-        # self.image_3_label.doubleClicked.connect(MainWindow.load_image)
-        # self.image_4_label.doubleClicked.connect(MainWindow.load_image)
-
-        # self.image_1_label.mousePressed.connect(MainWindow.label_pressed)
-        # self.image_2_label.mousePressed.connect(MainWindow.label_pressed)
-        # self.image_3_label.mousePressed.connect(MainWindow.label_pressed)
-        # self.image_4_label.mousePressed.connect(MainWindow.label_pressed)
-
-        # self.image_1_label.mouseMoved.connect(MainWindow.adjust_brightness_contrast)
-        # self.image_2_label.mouseMoved.connect(MainWindow.adjust_brightness_contrast)
-        # self.image_3_label.mouseMoved.connect(MainWindow.adjust_brightness_contrast)
-        # self.image_4_label.mouseMoved.connect(MainWindow.adjust_brightness_contrast)
 
 
         MainWindow.setCentralWidget(self.centralwidget)
@@ -487,8 +466,8 @@ class Ui_MainWindow(object):
         self.image_1_ft_combobox.setItemText(2, _translate("MainWindow", "Real"))
         self.image_1_ft_combobox.setItemText(3, _translate("MainWindow", "Imaginary"))
         self.image_1_ft_combobox_label.setText(_translate("MainWindow", "FT Component"))
-        self.output_1_checkbox.setText(_translate("MainWindow", "Show"))
-        self.output_2_checkbox.setText(_translate("MainWindow", "Show"))
+        self.output_1_radiobutton.setText(_translate("MainWindow", "Show"))
+        self.output_2_radiobutton.setText(_translate("MainWindow", "Show"))
         self.select_region_label.setText(_translate("MainWindow", "Region:"))
         self.ft_pairs_combobox.setItemText(0, _translate("MainWindow", "Magnitude and Phase"))
         self.ft_pairs_combobox.setItemText(1, _translate("MainWindow", "Real and Imaginary"))

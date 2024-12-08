@@ -4,7 +4,6 @@ from PyQt5.QtGui import QPixmap, QImage
 import sys
 from qt_material import apply_stylesheet
 from UI import Ui_MainWindow
-from Image import Image
 import numpy as np
 from ImageMixingWorker import ImageMixingWorker
 
@@ -12,6 +11,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.output_label = self.output_1_label
 
     def change_ft_component(self, image, ft_label):
         combo_box = self.sender()
@@ -35,28 +35,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 imaginary_8bit = self.normalize_to_8bit(image.imaginary_component)
                 imaginary_pixmap = self.array_to_pixmap(imaginary_8bit)
                 ft_label.setPixmap(imaginary_pixmap)
+
     def mix_images(self, images):
-        # Cancel any ongoing operation
+
         if hasattr(self, "worker") and self.worker.isRunning():
             self.worker.cancel()
             self.worker.wait()
 
-        # Create a new worker thread
         self.worker = ImageMixingWorker(images)
         self.worker.progress.connect(self.update_progress_bar)
         self.worker.result_ready.connect(self.display_mixed_image)
 
-        # Start the worker
         self.worker.start()
 
     def update_progress_bar(self, value):
-        self.progress_bar.setValue(value)  # Update the progress bar
+        self.progress_bar.setValue(value) 
 
     def display_mixed_image(self, mixed_image):
         mixed_8bit = self.normalize_to_8bit(mixed_image)
         mixed_pixmap = self.array_to_pixmap(mixed_8bit)
-        self.output_1_label.setPixmap(mixed_pixmap)
-        self.progress_bar.setValue(0)  # Reset progress bar
+        self.output_label.setPixmap(mixed_pixmap)
+        self.progress_bar.setValue(0)
 
     # def mix_images(self, images):
     #         self.output_1_image.magnitude_spectrum  = np.zeros_like(self.images[0].image.magnitude_spectrum, dtype=np.float64)
@@ -77,28 +76,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     #         mixed_8bit = self.normalize_to_8bit(self.output_1_image.image)
     #         mixed_pixmap = self.array_to_pixmap(mixed_8bit)
     #         self.output_1_label.setPixmap(mixed_pixmap)
+    
+    def switch_output_label(self):
+        if self.output_1_radiobutton.isChecked():
+            self.output_label = self.output_1_label
+        else:
+            # self.output_2_radiobutton.isChecked()
+            self.output_label = self.output_2_label
 
     def normalize_to_8bit(self, array):
         norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
         return norm
     
     def array_to_pixmap(self, array):
-        # Ensure the array is in the right dtype
         if array.dtype != np.uint8:
             raise ValueError("Array must be of type uint8.")
-
         height, width = array.shape
         bytes_per_line = width
-        # Convert the array to bytes
         image_data = array.tobytes()
-        # Create a QImage
         qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
-        # Convert the QImage to QPixmap
         return QPixmap.fromImage(qimage)
     
 def main():
     app = QApplication(sys.argv)
-    apply_stylesheet(app, "dark_medical.xml")
+    apply_stylesheet(app, "dark_purple.xml")
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
