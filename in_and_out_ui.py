@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QPoint
 from PyQt5.QtGui import QPixmap, QImage
 from Image import Image
-
+from RegionSelector import FTRegionSelector
 
 def creat_separator(type:str):
     separator = QFrame()
@@ -92,6 +92,7 @@ class InputImageUi:
         self.label_of_components_based_on = QLabel("zeyad")
         # self.label_of_components_based_on.setScaledContents(True)
         self.h_layout_of_original_and_changed_of_the_image.addWidget(self.label_of_components_based_on)
+
 
         self.magnitude_real_label = QLabel("Magnitude:")
         self.phase_imaginary_label = QLabel("Phase:")
