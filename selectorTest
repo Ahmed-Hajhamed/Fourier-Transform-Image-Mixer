@@ -94,6 +94,10 @@ class MainWindow(QWidget):
         self.label.setGeometry(50, 50, 700, 500)
         layout.addWidget(self.label)
 
+        self.label1 = ImageLabel(self)
+        self.label1.setGeometry(50, 50, 700, 500)
+        layout.addWidget(self.label1)
+
         # Slider to adjust rectangle size
         self.slider = QSlider(Qt.Horizontal, self)
         self.slider.setRange(50, 200)  # Range of the rectangle size (e.g., from 50 to 200)
