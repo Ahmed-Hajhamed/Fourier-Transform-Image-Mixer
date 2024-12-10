@@ -3,6 +3,24 @@ import numpy as np
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QPixmap, QImage
 
+def normalize_to_8bit(array):
+    norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
+    return norm
+
+def array_to_pixmap(array):
+    # Ensure the array is in the right dtype
+    # if array.dtype != np.uint8:
+    #     raise ValueError("Array must be of type uint8.")
+
+    height, width = array.shape
+    bytes_per_line = width
+    # Convert the array to bytes
+    image_data = array.tobytes()
+    # Create a QImage
+    qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
+    # Convert the QImage to QPixmap
+    return QPixmap.fromImage(qimage)
+
 class Image:
     def __init__(self, image_label):
         super().__init__()
@@ -10,28 +28,10 @@ class Image:
         self.contrast = 1.0
         self.brightness = 0
         self.image_label = image_label
-
-    def normalize_to_8bit(self, array):
-        norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
-        return norm
-    
-    def array_to_pixmap(self, array):
-        # Ensure the array is in the right dtype
-        # if array.dtype != np.uint8:
-        #     raise ValueError("Array must be of type uint8.")
-
-        height, width = array.shape
-        bytes_per_line = width
-        # Convert the array to bytes
-        image_data = array.tobytes()
-        # Create a QImage
-        qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
-        # Convert the QImage to QPixmap
-        return QPixmap.fromImage(qimage)
     
     def update_display(self):
         """Update the displayed image based on brightness and contrast adjustments."""
-        pixmap = self.array_to_pixmap(self.image)
+        pixmap = array_to_pixmap(self.image)
         self.image_label.setPixmap(pixmap)
 
     def load_image(self, image_path= None):
@@ -45,7 +45,7 @@ class Image:
             )
         if image_path:
             self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-            self.resize_image(300, 400)
+            # self.resize_image(300, 400)
             # Normalize to [0, 1]
             # max_pixel_value = self.image.max() 
             # self.image = self.image / max_pixel_value

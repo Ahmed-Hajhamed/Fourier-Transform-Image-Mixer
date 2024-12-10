@@ -6,6 +6,7 @@ from qt_material import apply_stylesheet
 from UI import Ui_MainWindow
 import numpy as np
 from ImageMixingWorker import ImageMixingWorker
+import Image
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -18,23 +19,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         combo_box = self.sender()
         if combo_box is not None:
             if combo_box.currentText() == "Magnitude":
-                magnitude_8bit = self.normalize_to_8bit(image.magnitude_log)
-                mag_pixmap = self.array_to_pixmap(magnitude_8bit)
+                magnitude_8bit = Image.normalize_to_8bit(image.magnitude_log)
+                mag_pixmap = Image.array_to_pixmap(magnitude_8bit)
                 ft_label.setPixmap(mag_pixmap)
 
             if combo_box.currentText() == "Phase":
-                phase_8bit = self.normalize_to_8bit(image.phase_spectrum)
-                phase_pixmap = self.array_to_pixmap(phase_8bit)
+                phase_8bit = Image.normalize_to_8bit(image.phase_spectrum)
+                phase_pixmap = Image.array_to_pixmap(phase_8bit)
                 ft_label.setPixmap(phase_pixmap)
 
             if combo_box.currentText() == "Real":
-                real_8bit = self.normalize_to_8bit(image.real_component)
-                real_pixmap = self.array_to_pixmap(real_8bit)
+                real_8bit = Image.normalize_to_8bit(image.real_component)
+                real_pixmap = Image.array_to_pixmap(real_8bit)
                 ft_label.setPixmap(real_pixmap)
 
             if combo_box.currentText() == "Imaginary":
-                imaginary_8bit = self.normalize_to_8bit(image.imaginary_component)
-                imaginary_pixmap = self.array_to_pixmap(imaginary_8bit)
+                imaginary_8bit = Image.normalize_to_8bit(image.imaginary_component)
+                imaginary_pixmap = Image.array_to_pixmap(imaginary_8bit)
                 ft_label.setPixmap(imaginary_pixmap)
 
     def mix_images(self, images):
@@ -53,8 +54,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.progress_bar.setValue(value) 
 
     def display_mixed_image(self, mixed_image):
-        mixed_8bit = self.normalize_to_8bit(mixed_image)
-        mixed_pixmap = self.array_to_pixmap(mixed_8bit)
+        mixed_8bit = Image.normalize_to_8bit(mixed_image)
+        mixed_pixmap = Image.array_to_pixmap(mixed_8bit)
         self.output_label.setPixmap(mixed_pixmap)
         self.progress_bar.setValue(0)
 
@@ -72,19 +73,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.output_label = self.output_1_label
         else:
             self.output_label = self.output_2_label
-
-    def normalize_to_8bit(self, array):
-        norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
-        return norm
-    
-    def array_to_pixmap(self, array):
-        if array.dtype != np.uint8:
-            raise ValueError("Array must be of type uint8.")
-        height, width = array.shape
-        bytes_per_line = width
-        image_data = array.tobytes()
-        qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
-        return QPixmap.fromImage(qimage)
     
 def main():
     app = QApplication(sys.argv)
