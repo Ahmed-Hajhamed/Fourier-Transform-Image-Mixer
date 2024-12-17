@@ -8,17 +8,10 @@ def normalize_to_8bit(array):
     return norm
 
 def array_to_pixmap(array):
-    # Ensure the array is in the right dtype
-    # if array.dtype != np.uint8:
-    #     raise ValueError("Array must be of type uint8.")
-
     height, width = array.shape
     bytes_per_line = width
-    # Convert the array to bytes
     image_data = array.tobytes()
-    # Create a QImage
     qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
-    # Convert the QImage to QPixmap
     return QPixmap.fromImage(qimage)
 
 class Image:
@@ -45,19 +38,15 @@ class Image:
             )
         if image_path:
             self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-            # self.resize_image(300, 400)
-            # Normalize to [0, 1]
-            # max_pixel_value = self.image.max() 
-            # self.image = self.image / max_pixel_value
+            self.resize_image(700, 400)
 
             self.adjust_brightness_contrast(reset= True)
 
             self.ft = np.fft.fft2(self.image)
-            # Shift the zero-frequency component to the center for better visualization
             self.ft_shifted = np.fft.fftshift(self.ft)
 
             self.magnitude_spectrum = np.abs(self.ft_shifted)
-            self.magnitude_log = np.log1p(self.magnitude_spectrum)  # Use log for better visualization
+            self.magnitude_log = np.log1p(self.magnitude_spectrum) 
             self.phase_spectrum = np.angle(self.ft_shifted)
             self.real_component = np.real(self.ft_shifted)
             self.imaginary_component = np.imag(self.ft_shifted)
@@ -82,6 +71,13 @@ class Image:
 
         self.image= cv2.convertScaleAbs(self.image, alpha=self.contrast, beta=self.brightness)  # Contrast (1.0 means no change)
                                                                                      # Brightness (0 means no change)
+        self.update_display()
+
+    def reconstruct_image(self):
+        ft_inverse_shift = np.fft.ifftshift(self.ft_shifted)
+
+        self.image = np.fft.ifft2(ft_inverse_shift)
+        self.image = np.abs(self.image)
         self.update_display()
 
     def modify_magnitude(self, gain):
@@ -140,7 +136,6 @@ class Image:
         rows, cols = compoent_to_modify.shape
         center_x, center_y = rows // 2, cols // 2
         radius = 30 
-        # Create a mask for high frequencies
         y, x = np.ogrid[:rows, :cols]
         mask = (x - center_x)**2 + (y - center_y)**2 >= radius**2
 
@@ -150,13 +145,3 @@ class Image:
         else:
             shift_in_rad = gain * np.pi / 180.0
             phase_to_modify[mask] += shift_in_rad
-
-    def reconstruct_image(self):
-        ft_inverse_shift = np.fft.ifftshift(self.ft_shifted)
-
-        self.image = np.fft.ifft2(ft_inverse_shift)
-        self.image = np.abs(self.image)
-        self.update_display()
-
-        # self.reconstructed_image = np.clip(self.reconstructed_image, 0, 1)
-        

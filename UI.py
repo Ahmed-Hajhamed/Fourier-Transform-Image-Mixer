@@ -1,17 +1,20 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QLabel, QProgressBar
-from PyQt5.QtCore import pyqtSignal, QPoint
+from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
-from Image import Image
+import Image
 
 class ImageLabel(QLabel):
     def __init__(self, magnitude_real_slider, phase_imaginary_slider, image_ft_label,
                         magnitude_real_label, phase_imaginary_label, parent=None):
         super().__init__(parent)
-        self.image = Image(self)
+        self.image = Image.Image(self)
         self.image.load_image("imgaes\IMG_20230807_000054_971.jpg")
         self.last_mouse_pos = QPoint()
         self.ft_label = image_ft_label
+        magnitude_8bit = Image.normalize_to_8bit(self.image.magnitude_log)
+        mag_pixmap = Image.array_to_pixmap(magnitude_8bit)
+        self.ft_label.setPixmap(mag_pixmap)
         self.magnitude_real_slider = magnitude_real_slider
         self.phase_imaginary_slider = phase_imaginary_slider
         self.magnitude_real_label = magnitude_real_label
@@ -28,8 +31,8 @@ class ImageLabel(QLabel):
         self.phase_imaginary_slider.setMaximum(200)
         self.phase_imaginary_slider.setValue(100)
         self.phase_imaginary_slider.setMaximumWidth(200)
-        self.setFixedSize(300,400)
-        self.ft_label.setFixedSize(300,400)
+        self.setFixedSize(365,400)
+        self.ft_label.setFixedSize(365,400)
         self.setScaledContents(True)
 
     def mouseDoubleClickEvent(self, event):
@@ -267,8 +270,8 @@ class Ui_MainWindow(object):
         self.output_2_label.setText("")
         self.output_2_label.setObjectName("output_2_label")
 
-        self.output_1_image = Image(self.output_1_label)
-        self.output_2_image = Image(self.output_2_label)
+        self.output_1_image = Image.Image(self.output_1_label)
+        self.output_2_image = Image.Image(self.output_2_label)
 
         self.output_v_layout.addWidget(self.output_1_label)
         self.output_1_radiobutton = QtWidgets.QRadioButton(self.centralwidget)
@@ -403,8 +406,8 @@ class Ui_MainWindow(object):
         self.output_1_label.setScaledContents(True)
         self.output_2_label.setScaledContents(True)
         
-        self.output_1_label.setFixedSize(300, 400)
-        self.output_2_label.setFixedSize(300, 400)
+        self.output_1_label.setFixedSize(365, 400)
+        self.output_2_label.setFixedSize(365, 400)
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
