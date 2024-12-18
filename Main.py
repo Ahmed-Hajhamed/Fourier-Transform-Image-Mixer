@@ -1,10 +1,8 @@
 from PyQt5.QtWidgets import (
     QApplication, QMainWindow)
-from PyQt5.QtGui import QPixmap, QImage
 import sys
 from qt_material import apply_stylesheet
 from UI import Ui_MainWindow
-import numpy as np
 from ImageMixingWorker import ImageMixingWorker
 import Image
 
@@ -15,28 +13,26 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.output_label = self.output_1_label
         self.reconstruction_pair = "Magnitude and Phase"
 
-    def change_ft_component(self, image, ft_label):
-        combo_box = self.sender()
-        if combo_box is not None:
-            if combo_box.currentText() == "Magnitude":
-                magnitude_8bit = Image.normalize_to_8bit(image.magnitude_log)
-                mag_pixmap = Image.array_to_pixmap(magnitude_8bit)
-                ft_label.setPixmap(mag_pixmap)
+    def change_ft_component(self, text, image, ft_label):
+        if text == "Magnitude":
+            magnitude_8bit = Image.normalize_to_8bit(image.magnitude_log)
+            mag_pixmap = Image.array_to_pixmap(magnitude_8bit)
+            ft_label.setPixmap(mag_pixmap)
 
-            if combo_box.currentText() == "Phase":
-                phase_8bit = Image.normalize_to_8bit(image.phase_spectrum)
-                phase_pixmap = Image.array_to_pixmap(phase_8bit)
-                ft_label.setPixmap(phase_pixmap)
+        if text == "Phase":
+            phase_8bit = Image.normalize_to_8bit(image.phase_spectrum)
+            phase_pixmap = Image.array_to_pixmap(phase_8bit)
+            ft_label.setPixmap(phase_pixmap)
 
-            if combo_box.currentText() == "Real":
-                real_8bit = Image.normalize_to_8bit(image.real_component)
-                real_pixmap = Image.array_to_pixmap(real_8bit)
-                ft_label.setPixmap(real_pixmap)
+        if text == "Real":
+            real_8bit = Image.normalize_to_8bit(image.real_component)
+            real_pixmap = Image.array_to_pixmap(real_8bit)
+            ft_label.setPixmap(real_pixmap)
 
-            if combo_box.currentText() == "Imaginary":
-                imaginary_8bit = Image.normalize_to_8bit(image.imaginary_component)
-                imaginary_pixmap = Image.array_to_pixmap(imaginary_8bit)
-                ft_label.setPixmap(imaginary_pixmap)
+        if text == "Imaginary":
+            imaginary_8bit = Image.normalize_to_8bit(image.imaginary_component)
+            imaginary_pixmap = Image.array_to_pixmap(imaginary_8bit)
+            ft_label.setPixmap(imaginary_pixmap)
 
     def mix_images(self, images):
 
