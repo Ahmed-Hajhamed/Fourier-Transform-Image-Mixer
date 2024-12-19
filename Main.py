@@ -50,9 +50,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.progress_bar.setValue(value) 
 
     def display_mixed_image(self, mixed_image):
-        mixed_8bit = Image.normalize_to_8bit(mixed_image)
-        mixed_pixmap = Image.array_to_pixmap(mixed_8bit)
-        self.output_label.setPixmap(mixed_pixmap)
+        mixed_image_8bit = Image.normalize_to_8bit(mixed_image)
+        mixed_image_pixmap = Image.array_to_pixmap(mixed_image_8bit)
+        self.output_label.setPixmap(mixed_image_pixmap)
         self.progress_bar.setValue(0)
 
     def change_reconstruction_pairs(self, images):

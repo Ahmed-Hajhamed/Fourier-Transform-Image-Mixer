@@ -75,7 +75,6 @@ class Image:
 
     def reconstruct_image(self):
         ft_inverse_shift = np.fft.ifftshift(self.ft_shifted)
-
         self.image = np.fft.ifft2(ft_inverse_shift)
         self.image = np.abs(self.image)
         self.update_display()
@@ -110,18 +109,15 @@ class Image:
         if phase_to_modify is None:
             row_start, row_end = selected_row[0], selected_row[-1]
             col_start, col_end = selected_coloumn[0], selected_coloumn[-1]
-
             compoent_to_modify[row_start:row_end, col_start:col_end] *= gain 
         else:
             angle_in_rad = gain * np.pi / 180.0
             phase_to_modify[row_start:row_end, col_start:col_end] += angle_in_rad
-            
 
     def modify_low_frequencies(compoent_to_modify, gain, phase_to_modify = None):
         rows, cols = compoent_to_modify.shape
         center_x, center_y = rows // 2, cols // 2
         radius = 30 
-        # Create a mask for high frequencies
         y, x = np.ogrid[:rows, :cols]
         mask = (x - center_x)**2 + (y - center_y)**2 <= radius**2
 
@@ -130,7 +126,6 @@ class Image:
         else:
             shift_in_rad = gain * np.pi / 180.0
             phase_to_modify[mask] += shift_in_rad
-
 
     def modify_high_frequencies(compoent_to_modify, gain, phase_to_modify = None):
         rows, cols = compoent_to_modify.shape
