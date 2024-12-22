@@ -66,6 +66,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.output_label = self.output_1_label
         else:
             self.output_label = self.output_2_label
+
+    def resize_images(self):
+        self.minimum_height = min(image.image.image.shape[0] for image in self.images)
+        self.minimum_width = min(image.image.image.shape[1] for image in self.images)
+        for image in self.images:
+            image.image.resize_image(self.minimum_width, self.minimum_height)
     
 if __name__ == "__main__":
     app = QApplication(sys.argv)

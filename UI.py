@@ -1,10 +1,10 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (QLabel, QProgressBar, QSlider, QGridLayout,
                 QFrame, QComboBox, QRadioButton, QPushButton, QWidget)
-from PyQt5.QtCore import QPoint, QRect
+from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
 import Image
-import RectangleSelector
+import ImageSelector
 
 def create_line(central_widget, horizontal = False, thick = True):
         line = QFrame(central_widget)  
@@ -39,9 +39,10 @@ class ImageLabel(QLabel):
         self.MainWindow = MainWindow
         self.image = Image.Image(self)
         self.image.load_image("imgaes\Screen Shot 2024-11-10 at 10.27.12 AM.png")
+        self.image.resize_image()
         self.last_mouse_pos = QPoint()
         self.ft_label = QLabel()
-
+        self.label = ImageSelector.ImageSelector(slider= region_slider)
         self.magnitude_real_slider = create_slider(10, 200)
         self.phase_imaginary_slider = create_slider(10, 200)
         self.magnitude_real_label = QLabel("Magnitude")
@@ -56,7 +57,7 @@ class ImageLabel(QLabel):
 
         self.ft_label.setFixedSize(300,400)
         self.ft_label.setScaledContents(True)
-        line = create_line(MainWindow.centralwidget, thick= False)
+        line = create_line(MainWindow.centralwidget, thick= True)
 
         self.image_layout = QGridLayout()
         self.image_layout.addWidget(self, 0, 0, 1, 2)
@@ -72,6 +73,7 @@ class ImageLabel(QLabel):
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.image.load_image()
+            self.MainWindow.resize_images()
             self.MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
 
     def mousePressEvent(self, event):
@@ -92,6 +94,7 @@ class ImageLabel(QLabel):
             self.image.contrast = max(contrast_min, min(contrast_max, new_contrast))
             self.image.adjust_brightness_contrast()
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setWindowTitle("FT Image Mixer")
@@ -102,12 +105,6 @@ class Ui_MainWindow(object):
         self.main_controls_layout = QGridLayout()
 
         self.selected_region_slider = create_slider(10, 400)
-        self.image_1_label = ImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
-        self.image_2_label = ImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
-        self.image_3_label = ImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
-        self.image_4_label = ImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
-        self.images = [self.image_1_label, self.image_2_label, self.image_3_label, self.image_4_label]
-
         line_1 = create_line(self.centralwidget)
         line_2 = create_line(self.centralwidget)
         line_3 = create_line(self.centralwidget)
@@ -118,22 +115,27 @@ class Ui_MainWindow(object):
         line_8 = create_line(self.centralwidget)
         line_9 = create_line(self.centralwidget, horizontal= True)
 
+        self.image_1_label = ImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
+        self.image_2_label = ImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
+        self.image_3_label = ImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
+        self.image_4_label = ImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
+        self.images = [self.image_1_label, self.image_2_label, self.image_3_label, self.image_4_label]
+
         self.output_1_label = QLabel(self.centralwidget)
         self.output_2_label = QLabel(self.centralwidget)
         self.select_region_label = QLabel(text= "Selected Region:")
         self.ft_pairs_label = QLabel("Reconstruction Pairs:")
         self.progress_label = QLabel("Mixing Progress:")
 
+        self.output_1_image = Image.Image(self.output_1_label)
+        self.output_2_image = Image.Image(self.output_2_label)
         self.output_1_radiobutton = create_radio_button(MainWindow, state= True)
         self.output_2_radiobutton = create_radio_button(MainWindow)
 
-        self.output_1_image = Image.Image(self.output_1_label)
-        self.output_2_image = Image.Image(self.output_2_label)
-
         self.output_layout.addWidget(self.output_1_label, 0, 0)
         self.output_layout.addWidget(self.output_2_label, 0, 2)
-        self.output_layout.addWidget(self.output_1_radiobutton, 1, 0, 2, 1)
         self.output_layout.addWidget(line_8, 0, 1, 2, 1)
+        self.output_layout.addWidget(self.output_1_radiobutton, 1, 0, 2, 1)
         self.output_layout.addWidget(self.output_2_radiobutton, 1, 2, 2, 1)
         self.output_layout.addWidget(line_9, 2, 0, 1, 3)
 

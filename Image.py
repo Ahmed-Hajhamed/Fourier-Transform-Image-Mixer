@@ -40,18 +40,7 @@ class Image:
             )
         if image_path:
             self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-            self.resize_image(700, 400)
-
             self.adjust_brightness_contrast(reset= True)
-
-            self.ft = np.fft.fft2(self.image)
-            self.ft_shifted = np.fft.fftshift(self.ft)
-
-            self.magnitude_spectrum = np.abs(self.ft_shifted)
-            self.magnitude_log = np.log1p(self.magnitude_spectrum) 
-            self.phase_spectrum = np.angle(self.ft_shifted)
-            self.real_component = np.real(self.ft_shifted)
-            self.imaginary_component = np.imag(self.ft_shifted)
             self.update_display()
         
     def compute_magnitude_phase(self):
@@ -63,16 +52,26 @@ class Image:
         self.real_component = self.magnitude_spectrum * np.cos(self.phase_spectrum)
         self.imaginary_component = self.magnitude_spectrum * np.sin(self.phase_spectrum)
 
-    def resize_image(self, width, height):
-        self.image = cv2.resize(self.image, (width, height))
+    def resize_image(self, width = None, height = None):
+        if width and height:
+            self.image = cv2.resize(self.image, (width, height))
+        self.compute_ft_components()
         self.update_display()
+
+    def compute_ft_components(self):
+        self.ft = np.fft.fft2(self.image)
+        self.ft_shifted = np.fft.fftshift(self.ft)
+        self.magnitude_spectrum = np.abs(self.ft_shifted)
+        self.magnitude_log = np.log1p(self.magnitude_spectrum) 
+        self.phase_spectrum = np.angle(self.ft_shifted)
+        self.real_component = np.real(self.ft_shifted)
+        self.imaginary_component = np.imag(self.ft_shifted)
 
     def adjust_brightness_contrast(self, reset= False):
         if reset:
             self.brightness, self.contrast = 0, 1.0
 
-        self.image= cv2.convertScaleAbs(self.image, alpha=self.contrast, beta=self.brightness)  # Contrast (1.0 means no change)
-                                                                                     # Brightness (0 means no change)
+        self.image= cv2.convertScaleAbs(self.image, alpha=self.contrast, beta=self.brightness)                                                                   
         self.update_display()
 
     def reconstruct_image(self):
