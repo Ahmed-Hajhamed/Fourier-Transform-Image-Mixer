@@ -1,5 +1,4 @@
-from PyQt5.QtWidgets import (
-    QApplication, QMainWindow)
+from PyQt5.QtWidgets import (QApplication, QMainWindow)
 import sys
 from qt_material import apply_stylesheet
 from UI import Ui_MainWindow
@@ -35,7 +34,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             ft_label.setPixmap(imaginary_pixmap)
 
     def mix_images(self, images):
-
         if hasattr(self, "worker") and self.worker.isRunning():
             self.worker.cancel()
             self.worker.wait()
@@ -43,7 +41,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.worker = ImageMixingWorker(images, self.reconstruction_pair)
         self.worker.progress.connect(self.update_progress_bar)
         self.worker.result_ready.connect(self.display_mixed_image)
-
         self.worker.start()
 
     def update_progress_bar(self, value):
@@ -70,12 +67,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.output_label = self.output_2_label
     
-def main():
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     apply_stylesheet(app, "dark_purple.xml")
     window = MainWindow()
     window.show()
     sys.exit(app.exec_())
-
-if __name__ == "__main__":
-    main()
