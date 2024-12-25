@@ -73,6 +73,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.output_label = self.output_1_label
         else:
             self.output_label = self.output_2_label
+    
+    def switch_inner_outer(self):
+        # if self.inner_region_radio_button.isChecked():
+        #     self.inner_region_radio_button
+        # else:
+        #     self.inner
+        return
 
     def resize_images(self):
         self.minimum_height = min(image.image.image.shape[0] for image in self.images)

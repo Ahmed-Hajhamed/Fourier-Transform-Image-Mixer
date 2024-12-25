@@ -1,6 +1,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (QLabel, QProgressBar, QSlider, QGridLayout, QCheckBox,
-                QFrame, QComboBox, QRadioButton, QPushButton, QWidget)
+                QFrame, QComboBox, QRadioButton, QButtonGroup, QPushButton, QWidget)
 from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
 import Image
@@ -26,11 +26,20 @@ def create_slider(minimum, maximum):
     slider.setValue(maximum // 2)
     return slider
 
-def create_radio_button(MainWindow, state = False):
+def create_radio_button(MainWindow,gruop_button ,state = False):
     radio_button = QRadioButton()
     radio_button.setText("Show")
     radio_button.setChecked(state)
     radio_button.toggled.connect(MainWindow.switch_output_label)
+    gruop_button.addButton(radio_button)
+    return radio_button
+
+def create_radio_of_inner_outer(MainWindow, name, gruop_button, state = False):
+    radio_button = QRadioButton()
+    radio_button.setText(name)
+    radio_button.setChecked(state)
+    radio_button.toggled.connect(MainWindow.switch_inner_outer)
+    gruop_button.addButton(radio_button)
     return radio_button
 
 class ImageLabel(QLabel):
@@ -38,7 +47,7 @@ class ImageLabel(QLabel):
         super().__init__(parent)
         self.MainWindow = MainWindow
         self.image = Image.Image(self)
-        self.image.load_image("imgaes\Screen Shot 2024-11-10 at 10.27.12 AM.png")
+        self.image.load_image("imgaes/Screen Shot 2024-11-10 at 10.27.12 AM.png")
         self.image.resize_image()
         self.last_mouse_pos = QPoint()
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
@@ -94,7 +103,7 @@ class ImageLabel(QLabel):
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setWindowTitle("FT Image Mixer")
-        MainWindow.resize(1233, 799)
+        MainWindow.resize(1000, 600)
         self.centralwidget = QWidget(MainWindow)
         self.main_gridLayout = QGridLayout(self.centralwidget)
         self.output_layout = QGridLayout()
@@ -125,8 +134,9 @@ class Ui_MainWindow(object):
 
         self.output_1_image = Image.Image(self.output_1_label)
         self.output_2_image = Image.Image(self.output_2_label)
-        self.output_1_radiobutton = create_radio_button(MainWindow, state= True)
-        self.output_2_radiobutton = create_radio_button(MainWindow)
+        self.group_button = QButtonGroup(self.centralwidget)
+        self.output_1_radiobutton = create_radio_button(MainWindow,self.group_button ,state= True)
+        self.output_2_radiobutton = create_radio_button(MainWindow, self.group_button)
 
         self.output_layout.addWidget(self.output_1_label, 0, 0)
         self.output_layout.addWidget(self.output_2_label, 0, 2)
@@ -146,15 +156,18 @@ class Ui_MainWindow(object):
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100) 
         self.progress_bar.setValue(0)
+        self.group_button_inner_outer = QButtonGroup(self.centralwidget)
+        self.inner_region_radio_button = create_radio_of_inner_outer(MainWindow, name="Inner Region",gruop_button= self.group_button_inner_outer, state=True)
+        self.outer_region_radio_button = create_radio_of_inner_outer(MainWindow, name="Outer Region", gruop_button= self.group_button_inner_outer)
 
-        self.inner_region_checkbox = QCheckBox(text= "Inner Region")
-        self.outer_region_checkbox = QCheckBox(text= "Outer Region")
 
         self.main_controls_layout.addWidget(self.mix_button, 0, 0, 1, 1)
         self.main_controls_layout.addWidget(line_7, 0, 1, 1, 1)
         self.main_controls_layout.addWidget(self.progress_label, 0, 2, 1, 1)
         self.main_controls_layout.addWidget(self.progress_bar, 0, 3, 1, 1)
         self.main_controls_layout.addWidget(self.select_region_label, 2, 0, 1, 1)
+        self.main_controls_layout.addWidget(self.inner_region_radio_button, 1, 0, 1, 2)
+        self.main_controls_layout.addWidget(self.outer_region_radio_button, 1, 1, 1, 2)
         self.main_controls_layout.addWidget(self.selected_region_slider, 2, 2, 1, 2)
         self.main_controls_layout.addWidget(self.ft_pairs_label, 3, 0, 1, 1)
         self.main_controls_layout.addWidget(self.ft_pairs_combobox, 3, 2, 1, 2)
