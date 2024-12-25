@@ -26,7 +26,7 @@ def create_slider(minimum, maximum):
     slider.setValue(maximum // 2)
     return slider
 
-def create_radio_button(MainWindow,gruop_button ,state = False):
+def create_radio_button(MainWindow, gruop_button ,state = False):
     radio_button = QRadioButton()
     radio_button.setText("Show")
     radio_button.setChecked(state)
@@ -34,11 +34,10 @@ def create_radio_button(MainWindow,gruop_button ,state = False):
     gruop_button.addButton(radio_button)
     return radio_button
 
-def create_radio_of_inner_outer(MainWindow, name, gruop_button, state = False):
+def create_radio_of_inner_outer(name, gruop_button, state = False):
     radio_button = QRadioButton()
     radio_button.setText(name)
     radio_button.setChecked(state)
-    radio_button.toggled.connect(MainWindow.switch_inner_outer)
     gruop_button.addButton(radio_button)
     return radio_button
 
@@ -135,7 +134,7 @@ class Ui_MainWindow(object):
         self.output_1_image = Image.Image(self.output_1_label)
         self.output_2_image = Image.Image(self.output_2_label)
         self.group_button = QButtonGroup(self.centralwidget)
-        self.output_1_radiobutton = create_radio_button(MainWindow,self.group_button ,state= True)
+        self.output_1_radiobutton = create_radio_button(MainWindow, self.group_button ,state= True)
         self.output_2_radiobutton = create_radio_button(MainWindow, self.group_button)
 
         self.output_layout.addWidget(self.output_1_label, 0, 0)
@@ -156,10 +155,11 @@ class Ui_MainWindow(object):
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100) 
         self.progress_bar.setValue(0)
-        self.group_button_inner_outer = QButtonGroup(self.centralwidget)
-        self.inner_region_radio_button = create_radio_of_inner_outer(MainWindow, name="Inner Region",gruop_button= self.group_button_inner_outer, state=True)
-        self.outer_region_radio_button = create_radio_of_inner_outer(MainWindow, name="Outer Region", gruop_button= self.group_button_inner_outer)
 
+        self.group_button_inner_outer = QButtonGroup(self.centralwidget)
+        self.inner_region_radio_button = create_radio_of_inner_outer(name="Inner Region",gruop_button= self.group_button_inner_outer, state=True)
+        self.outer_region_radio_button = create_radio_of_inner_outer(name="Outer Region", gruop_button= self.group_button_inner_outer)
+        self.sliders_weights_radio_button = create_radio_of_inner_outer(name="Sliders' Weight", gruop_button= self.group_button_inner_outer)
 
         self.main_controls_layout.addWidget(self.mix_button, 0, 0, 1, 1)
         self.main_controls_layout.addWidget(line_7, 0, 1, 1, 1)
@@ -168,6 +168,7 @@ class Ui_MainWindow(object):
         self.main_controls_layout.addWidget(self.select_region_label, 2, 0, 1, 1)
         self.main_controls_layout.addWidget(self.inner_region_radio_button, 1, 0, 1, 2)
         self.main_controls_layout.addWidget(self.outer_region_radio_button, 1, 1, 1, 2)
+        self.main_controls_layout.addWidget(self.sliders_weights_radio_button, 1, 2, 1, 2)
         self.main_controls_layout.addWidget(self.selected_region_slider, 2, 2, 1, 2)
         self.main_controls_layout.addWidget(self.ft_pairs_label, 3, 0, 1, 1)
         self.main_controls_layout.addWidget(self.ft_pairs_combobox, 3, 2, 1, 2)

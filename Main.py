@@ -32,15 +32,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             imaginary_8bit = Image.normalize_to_8bit(image.imaginary_component)
             imaginary_pixmap = Image.array_to_pixmap(imaginary_8bit)
             ft_label.setPixmap(imaginary_pixmap)
-        # ft_label.get_outer_region()
 
     def mix_images(self, images):
         if hasattr(self, "worker") and self.worker.isRunning():
             self.worker.cancel()
             self.worker.wait()
-        if self.inner_region_checkbox.isCkecked():
+        if self.inner_region_radio_button.isChecked():
             indices = self.image_1_label.ft_label.inner_indices
-        elif self.outer_region_checkbox.isCkecked():
+        elif self.outer_region_radio_button.isChecked():
             indices = self.image_1_label.ft_label.outer_indices
         else:
             indices = None
@@ -73,13 +72,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.output_label = self.output_1_label
         else:
             self.output_label = self.output_2_label
-    
-    def switch_inner_outer(self):
-        # if self.inner_region_radio_button.isChecked():
-        #     self.inner_region_radio_button
-        # else:
-        #     self.inner
-        return
 
     def resize_images(self):
         self.minimum_height = min(image.image.image.shape[0] for image in self.images)
