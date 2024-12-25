@@ -168,7 +168,7 @@ class Ui_MainWindow(object):
         self.main_controls_layout.addWidget(self.select_region_label, 2, 0, 1, 1)
         self.main_controls_layout.addWidget(self.inner_region_radio_button, 1, 0, 1, 2)
         self.main_controls_layout.addWidget(self.outer_region_radio_button, 1, 1, 1, 2)
-        self.main_controls_layout.addWidget(self.sliders_weights_radio_button, 1, 2, 1, 2)
+        self.main_controls_layout.addWidget(self.sliders_weights_radio_button, 1, 3, 1, 2)
         self.main_controls_layout.addWidget(self.selected_region_slider, 2, 2, 1, 2)
         self.main_controls_layout.addWidget(self.ft_pairs_label, 3, 0, 1, 1)
         self.main_controls_layout.addWidget(self.ft_pairs_combobox, 3, 2, 1, 2)

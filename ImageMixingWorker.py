@@ -55,8 +55,8 @@ class ImageMixingWorker(QThread):
                     image.image.magnitude_spectrum * image.magnitude_real_slider.value() / 100
                 )
                 weight = image.phase_imaginary_slider.value() / (100.0 * num_images)
-                phase_spectrum_real += weight * np.cos(image.image.phase_spectrum[self.indices])
-                phase_spectrum_imag += weight * np.sin(image.image.phase_spectrum[self.indices])
+                phase_spectrum_real += weight * np.cos(image.image.phase_spectrum)
+                phase_spectrum_imag += weight * np.sin(image.image.phase_spectrum)
 
                 real_component += (
                     image.image.real_component * image.magnitude_real_slider.value() / 100
