@@ -39,12 +39,17 @@ class ImageMixingWorker(QThread):
                 self.progress.emit((idx + 1) * 100 // num_images)
 
             if self.reconstruction_pair == "Magnitude and Phase":
-                phase_spectrum = np.arctan2(phase_spectrum_imag[self.indices], phase_spectrum_real[self.indices])
-                ft_shifted = (magnitude_spectrum[self.indices] / num_images) * np.exp(1j * phase_spectrum)
+                # Apply mask to magnitude and phase spectra
+                phase_spectrum = np.arctan2(phase_spectrum_imag, phase_spectrum_real)
+                masked_magnitude_spectrum = magnitude_spectrum * self.indices  # Apply mask
+                masked_phase_spectrum = phase_spectrum * self.indices  # Optional: phase spectrum may need no masking if global phase is desired
+                ft_shifted = (masked_magnitude_spectrum / num_images) * np.exp(1j * masked_phase_spectrum)
 
             elif self.reconstruction_pair == "Real and Imaginary":
-                ft_shifted = (real_component[self.indices] / num_images) + 1j * (imaginary_component[self.indices] / num_images)
-
+                # Apply mask to real and imaginary components
+                masked_real_component = real_component * self.indices
+                masked_imaginary_component = imaginary_component * self.indices
+                ft_shifted = (masked_real_component / num_images) + 1j * (masked_imaginary_component / num_images)
 
         else:
             for idx, image in enumerate(self.images):

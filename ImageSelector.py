@@ -99,9 +99,9 @@ class ImageLabelSelector(QLabel):
         mask[y1:y2, x1:x2] = True
 
         if inner:
-            return np.where(mask) 
+            return (mask) 
         else:
-            return np.where(~mask) 
+            return (~mask) 
 
 
 if __name__ == "__main__":
