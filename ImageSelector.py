@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
 from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPixmap, QPainter, QPen
+from PyQt5.QtGui import QPainter, QPen
 import numpy as np
 
 class ImageSelector(QWidget):
@@ -56,25 +56,21 @@ class ImageLabelSelector(QLabel):
 
         label_width = self.width()
         label_height = self.height()
-
-        # Calculate the maximum size for the rectangle
         rect_width = label_width * self.rect_percentage / 100
         rect_height = label_height * self.rect_percentage / 100
 
         rect_x = (label_width - rect_width) / 2
         rect_y = (label_height - rect_height) / 2
-
         rect = QRect(int(rect_x), int(rect_y), int(rect_width), int(rect_height))
 
         painter.drawRect(rect)
         painter.end()
 
-
     def getModifiedIndices(self, inner=True):
         pixmap = self.pixmap()
         if pixmap is None:
             return None
-
+        
         image = pixmap.toImage()
         width, height = image.width(), image.height()
 

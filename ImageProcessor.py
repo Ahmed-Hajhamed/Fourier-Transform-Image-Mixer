@@ -14,7 +14,7 @@ def array_to_pixmap(array):
     qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
     return QPixmap.fromImage(qimage)
 
-class Image:
+class ImageProcessor:
     def __init__(self, image_label):
         super().__init__()
         self.image = None
@@ -25,13 +25,11 @@ class Image:
         self.image_label.setFixedSize(200, 300)
     
     def update_display(self):
-        """Update the displayed image based on brightness and contrast adjustments."""
         pixmap = array_to_pixmap(self.image)
         self.image_label.setPixmap(pixmap)
 
 
     def load_image(self, image_path= None):
-        """"Load Image and get Magnitude, Phase, Real and Imaginary parts of the Image FT"""
         if image_path is None:
             image_path, _ = QFileDialog.getOpenFileName(
                 None, 
