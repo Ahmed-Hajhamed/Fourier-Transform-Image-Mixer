@@ -35,6 +35,10 @@ class ImageSelector(QWidget):
 
     def get_inner_region(self):
         self.inner_indices =  self.image_label.getModifiedIndices(inner=True)
+        if self.inner_indices is not None:
+            print(f"inner:{self.inner_indices}")
+        if self.outer_indices  is not None:
+            print(f"ouer: {self.outer_indices}")
 
     def get_outer_region(self):
         self.outer_indices =  self.image_label.getModifiedIndices(inner=False)
@@ -95,9 +99,9 @@ class ImageLabelSelector(QLabel):
         mask[y1:y2, x1:x2] = True
 
         if inner:
-            return mask 
+            return np.where(mask) 
         else:
-            return ~mask 
+            return np.where(~mask) 
 
 
 if __name__ == "__main__":

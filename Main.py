@@ -38,8 +38,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if hasattr(self, "worker") and self.worker.isRunning():
             self.worker.cancel()
             self.worker.wait()
-        
-        self.worker = ImageMixingWorker(images, self.reconstruction_pair)
+        if self.inner_region_checkbox.isCkecked():
+            indices = self.image_1_label.ft_label.inner_indices
+        elif self.outer_region_checkbox.isCkecked():
+            indices = self.image_1_label.ft_label.outer_indices
+        else:
+            indices = None
+
+        self.worker = ImageMixingWorker(images, self.reconstruction_pair, indices)
         self.worker.progress.connect(self.update_progress_bar)
         self.worker.result_ready.connect(self.display_mixed_image)
         self.worker.start()
