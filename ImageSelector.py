@@ -32,13 +32,11 @@ class ImageSelector(QWidget):
 
     def updateRectangleSize(self, value):
         self.image_label.setRectSizePercentage(value)
+        self.get_inner_region()
+        self.get_outer_region()
 
     def get_inner_region(self):
         self.inner_indices =  self.image_label.getModifiedIndices(inner=True)
-        if self.inner_indices is not None:
-            print(f"inner:{self.inner_indices}")
-        if self.outer_indices  is not None:
-            print(f"ouer: {self.outer_indices}")
 
     def get_outer_region(self):
         self.outer_indices =  self.image_label.getModifiedIndices(inner=False)
