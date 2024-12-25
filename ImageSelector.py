@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPixmap, QPainter, QPen, QImage
+from PyQt5.QtGui import QPixmap, QPainter, QPen
 import numpy as np
 
 class ImageSelector(QWidget):

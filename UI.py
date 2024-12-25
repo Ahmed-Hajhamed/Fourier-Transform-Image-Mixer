@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QLabel, QProgressBar, QSlider, QGridLayout, QCheckBox,
+from PyQt5.QtWidgets import (QLabel, QProgressBar, QSlider, QGridLayout,
                 QFrame, QComboBox, QRadioButton, QButtonGroup, QPushButton, QWidget)
 from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
