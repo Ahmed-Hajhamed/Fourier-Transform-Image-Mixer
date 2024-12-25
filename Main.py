@@ -13,7 +13,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reconstruction_pair = "Magnitude and Phase"
 
     def change_ft_component(self, text, image, ft_label):
-        print('here')
         if text == "Magnitude":
             magnitude_8bit = Image.normalize_to_8bit(image.magnitude_log)
             mag_pixmap = Image.array_to_pixmap(magnitude_8bit)

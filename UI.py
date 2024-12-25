@@ -23,7 +23,7 @@ def create_slider(minimum, maximum):
     slider.setOrientation(Qt.Horizontal)
     slider.setMinimum(minimum)
     slider.setMaximum(maximum)
-    slider.setValue(100)
+    slider.setValue(maximum // 2)
     return slider
 
 def create_radio_button(MainWindow, state = False):
@@ -43,8 +43,8 @@ class ImageLabel(QLabel):
         self.last_mouse_pos = QPoint()
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
         self.label = ImageSelector.ImageSelector(slider= region_slider)
-        self.magnitude_real_slider = create_slider(10, 200)
-        self.phase_imaginary_slider = create_slider(10, 200)
+        self.magnitude_real_slider = create_slider(0, 200)
+        self.phase_imaginary_slider = create_slider(0, 200)
         self.magnitude_real_label = QLabel("Magnitude")
         self.phase_imaginary_label = QLabel("Phase")
         combobox_label = QLabel("FT Component:")
@@ -104,7 +104,7 @@ class Ui_MainWindow(object):
         self.output_layout = QGridLayout()
         self.main_controls_layout = QGridLayout()
 
-        self.selected_region_slider = create_slider(10, 400)
+        self.selected_region_slider = create_slider(0, 90)
         line_1 = create_line(self.centralwidget)
         line_2 = create_line(self.centralwidget)
         line_3 = create_line(self.centralwidget)
