@@ -1,10 +1,10 @@
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QLabel, QVBoxLayout, QWidget
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPixmap, QPainter, QPen
 import numpy as np
 
 class ImageSelector(QWidget):
-    def __init__(self, pixmap = None, slider = None, label_size=(200, 300),  parent=None,label=None):
+    def __init__(self, slider = None, label_size=(200, 300),  parent=None):
         super().__init__(parent)
         self.inner_indices = None
         self.outer_indices = None
@@ -18,13 +18,7 @@ class ImageSelector(QWidget):
         self.slider=slider
         self.slider.valueChanged.connect(self.updateRectangleSize)
 
-        if pixmap:
-            self.setPixmap(QPixmap(pixmap))
-
     def setPixmap(self, pixmap):
-        """
-        Set or update the pixmap displayed in the QLabel.
-        """
         self.image_label.setPixmap(pixmap)
         self.image_label.update()
         self.get_inner_region()
@@ -63,18 +57,15 @@ class ImageLabelSelector(QLabel):
         label_width = self.width()
         label_height = self.height()
 
-        # Calculate the maximum size for the rectangle while maintaining the aspect ratio
+        # Calculate the maximum size for the rectangle
         rect_width = label_width * self.rect_percentage / 100
         rect_height = label_height * self.rect_percentage / 100
 
-        # Center the rectangle within the label
         rect_x = (label_width - rect_width) / 2
         rect_y = (label_height - rect_height) / 2
 
-        # Create the QRect for the rectangle
         rect = QRect(int(rect_x), int(rect_y), int(rect_width), int(rect_height))
 
-        # Draw the rectangle
         painter.drawRect(rect)
         painter.end()
 
@@ -100,12 +91,3 @@ class ImageLabelSelector(QLabel):
             return (mask) 
         else:
             return (~mask) 
-
-
-if __name__ == "__main__":
-    import sys
-    app = QApplication(sys.argv)
-    # Create an instance of ImageSelector
-    window = ImageSelector("imgaes\IMG_20230807_000054_971.jpg")
-    window.show()
-    sys.exit(app.exec_())

@@ -79,6 +79,8 @@ class ImageLabel(QLabel):
             self.image.load_image()
             self.MainWindow.resize_images()
             self.MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
+            self.magnitude_real_slider.setValue(100)
+            self.phase_imaginary_slider.setValue(100)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -97,7 +99,6 @@ class ImageLabel(QLabel):
             self.image.brightness = max(brightness_min, min(brightness_max, new_brightness))
             self.image.contrast = max(contrast_min, min(contrast_max, new_contrast))
             self.image.adjust_brightness_contrast()
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -133,6 +134,7 @@ class Ui_MainWindow(object):
 
         self.output_1_image = Image.Image(self.output_1_label)
         self.output_2_image = Image.Image(self.output_2_label)
+
         self.group_button = QButtonGroup(self.centralwidget)
         self.output_1_radiobutton = create_radio_button(MainWindow, self.group_button ,state= True)
         self.output_2_radiobutton = create_radio_button(MainWindow, self.group_button)
@@ -157,9 +159,12 @@ class Ui_MainWindow(object):
         self.progress_bar.setValue(0)
 
         self.group_button_inner_outer = QButtonGroup(self.centralwidget)
-        self.inner_region_radio_button = create_radio_of_inner_outer(name="Inner Region",gruop_button= self.group_button_inner_outer, state=True)
-        self.outer_region_radio_button = create_radio_of_inner_outer(name="Outer Region", gruop_button= self.group_button_inner_outer)
-        self.sliders_weights_radio_button = create_radio_of_inner_outer(name="Sliders' Weight", gruop_button= self.group_button_inner_outer)
+        self.inner_region_radio_button = create_radio_of_inner_outer(name="Inner Region",
+                                                            gruop_button= self.group_button_inner_outer, state=True)
+        self.outer_region_radio_button = create_radio_of_inner_outer(name="Outer Region",
+                                                            gruop_button= self.group_button_inner_outer)
+        self.sliders_weights_radio_button = create_radio_of_inner_outer(name="Sliders' Weight",
+                                                            gruop_button= self.group_button_inner_outer)
 
         self.main_controls_layout.addWidget(self.mix_button, 0, 0, 1, 1)
         self.main_controls_layout.addWidget(line_7, 0, 1, 1, 1)
