@@ -1,7 +1,6 @@
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (QLabel, QProgressBar, QGridLayout,
                 QComboBox, QRadioButton, QButtonGroup, QPushButton, QWidget)
-from PyQt5.QtCore import Qt
 from ImageProcessor import ImageProcessor
 import InputImageLabel
 
@@ -70,6 +69,10 @@ class Ui_MainWindow(object):
                                                             gruop_button= self.group_button_inner_outer)
         self.sliders_weights_radio_button = create_radio_of_inner_outer(name="Sliders' Weight",
                                                             gruop_button= self.group_button_inner_outer)
+
+        self.inner_region_radio_button.toggled.connect(MainWindow.mix_images)
+        self.outer_region_radio_button.toggled.connect(MainWindow.mix_images)
+        self.sliders_weights_radio_button.toggled.connect(MainWindow.mix_images)
 
         self.main_controls_layout.addWidget(self.mix_button, 0, 0, 1, 1)
         self.main_controls_layout.addWidget(line_7, 0, 1, 1, 1)

@@ -25,6 +25,10 @@ class InputImageLabel(QLabel):
         self.ft_combobox.addItems(FT_COMPONENTS)
         self.ft_combobox.currentIndexChanged.connect(lambda: MainWindow.change_ft_component(
                         self.ft_combobox.currentText(), self.image, self.ft_label))
+        
+        self.magnitude_real_slider.valueChanged.connect(MainWindow.mix_images)
+        self.phase_imaginary_slider.valueChanged.connect(MainWindow.mix_images)
+
         MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
 
         self.image_layout = QGridLayout()
