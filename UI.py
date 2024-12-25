@@ -12,7 +12,7 @@ class Ui_MainWindow(object):
         self.main_gridLayout = QGridLayout(self.centralwidget)
         self.output_layout = QGridLayout()
         self.main_controls_layout = QGridLayout()
-        self.selected_region_slider = InputImageLabel.create_slider(0, 90)
+        self.selected_region_slider = InputImageLabel.create_slider(1, 90)
 
         line_1 = InputImageLabel.create_line(self.centralwidget)
         line_2 = InputImageLabel.create_line(self.centralwidget)
