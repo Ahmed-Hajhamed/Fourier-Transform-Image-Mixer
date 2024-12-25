@@ -13,6 +13,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reconstruction_pair = "Magnitude and Phase"
 
     def change_ft_component(self, text, image, ft_label):
+        print('here')
         if text == "Magnitude":
             magnitude_8bit = Image.normalize_to_8bit(image.magnitude_log)
             mag_pixmap = Image.array_to_pixmap(magnitude_8bit)
@@ -32,12 +33,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             imaginary_8bit = Image.normalize_to_8bit(image.imaginary_component)
             imaginary_pixmap = Image.array_to_pixmap(imaginary_8bit)
             ft_label.setPixmap(imaginary_pixmap)
+        # ft_label.get_outer_region()
 
     def mix_images(self, images):
         if hasattr(self, "worker") and self.worker.isRunning():
             self.worker.cancel()
             self.worker.wait()
-
+        
         self.worker = ImageMixingWorker(images, self.reconstruction_pair)
         self.worker.progress.connect(self.update_progress_bar)
         self.worker.result_ready.connect(self.display_mixed_image)

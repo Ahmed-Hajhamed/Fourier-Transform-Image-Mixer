@@ -41,7 +41,7 @@ class ImageLabel(QLabel):
         self.image.load_image("imgaes\Screen Shot 2024-11-10 at 10.27.12 AM.png")
         self.image.resize_image()
         self.last_mouse_pos = QPoint()
-        self.ft_label = QLabel()
+        self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
         self.label = ImageSelector.ImageSelector(slider= region_slider)
         self.magnitude_real_slider = create_slider(10, 200)
         self.phase_imaginary_slider = create_slider(10, 200)
@@ -56,7 +56,7 @@ class ImageLabel(QLabel):
         MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
 
         self.ft_label.setFixedSize(300,400)
-        self.ft_label.setScaledContents(True)
+        # self.ft_label.setScaledContents(True)
         line = create_line(MainWindow.centralwidget, thick= True)
 
         self.image_layout = QGridLayout()
