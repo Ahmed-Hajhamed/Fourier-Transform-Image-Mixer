@@ -4,7 +4,7 @@ from PyQt5.QtGui import QPixmap, QPainter, QPen, QImage
 import numpy as np
 
 class ImageSelector(QWidget):
-    def __init__(self, pixmap = None, slider = None, label_size=(300, 400),  parent=None,label=None):
+    def __init__(self, pixmap = None, slider = None, label_size=(200, 300),  parent=None,label=None):
         super().__init__(parent)
         self.inner_indices = None
         self.outer_indices = None

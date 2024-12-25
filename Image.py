@@ -22,7 +22,7 @@ class Image:
         self.brightness = 0
         self.image_label = image_label
         self.image_label.setScaledContents(True)
-        self.image_label.setFixedSize(300, 400)
+        self.image_label.setFixedSize(200, 300)
     
     def update_display(self):
         """Update the displayed image based on brightness and contrast adjustments."""

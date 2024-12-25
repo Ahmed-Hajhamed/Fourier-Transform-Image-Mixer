@@ -38,7 +38,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if hasattr(self, "worker") and self.worker.isRunning():
             self.worker.cancel()
             self.worker.wait()
-        
+        if self.inner_region_radio_button.isChecked():
+            pass
+        else:
+            pass
         self.worker = ImageMixingWorker(images, self.reconstruction_pair)
         self.worker.progress.connect(self.update_progress_bar)
         self.worker.result_ready.connect(self.display_mixed_image)
@@ -67,6 +70,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.output_label = self.output_1_label
         else:
             self.output_label = self.output_2_label
+    
+    def switch_inner_outer(self):
+        # if self.inner_region_radio_button.isChecked():
+        #     self.inner_region_radio_button
+        # else:
+        #     self.inner
+        return
 
     def resize_images(self):
         self.minimum_height = min(image.image.image.shape[0] for image in self.images)
