@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import (QApplication, QMainWindow)
+from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys
 from qt_material import apply_stylesheet
 from UI import Ui_MainWindow

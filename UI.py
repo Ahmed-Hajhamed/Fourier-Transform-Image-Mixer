@@ -1,5 +1,5 @@
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QLabel, QProgressBar, QSlider, QGridLayout,
+from PyQt5.QtWidgets import (QLabel, QProgressBar, QSlider, QGridLayout, QCheckBox,
                 QFrame, QComboBox, QRadioButton, QPushButton, QWidget)
 from PyQt5.QtCore import QPoint
 from PyQt5.QtCore import Qt
@@ -42,9 +42,9 @@ class ImageLabel(QLabel):
         self.image.resize_image()
         self.last_mouse_pos = QPoint()
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
-        self.label = ImageSelector.ImageSelector(slider= region_slider)
         self.magnitude_real_slider = create_slider(0, 200)
         self.phase_imaginary_slider = create_slider(0, 200)
+        line = create_line(MainWindow.centralwidget, thick= True)
         self.magnitude_real_label = QLabel("Magnitude")
         self.phase_imaginary_label = QLabel("Phase")
         combobox_label = QLabel("FT Component:")
@@ -54,10 +54,6 @@ class ImageLabel(QLabel):
         self.ft_combobox.currentIndexChanged.connect(lambda: MainWindow.change_ft_component(
                         self.ft_combobox.currentText(), self.image, self.ft_label))
         MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
-
-        self.ft_label.setFixedSize(300,400)
-        # self.ft_label.setScaledContents(True)
-        line = create_line(MainWindow.centralwidget, thick= True)
 
         self.image_layout = QGridLayout()
         self.image_layout.addWidget(self, 0, 0, 1, 2)
@@ -150,6 +146,9 @@ class Ui_MainWindow(object):
         self.progress_bar = QProgressBar()
         self.progress_bar.setRange(0, 100) 
         self.progress_bar.setValue(0)
+
+        self.inner_region_checkbox = QCheckBox(text= "Inner Region")
+        self.outer_region_checkbox = QCheckBox(text= "Outer Region")
 
         self.main_controls_layout.addWidget(self.mix_button, 0, 0, 1, 1)
         self.main_controls_layout.addWidget(line_7, 0, 1, 1, 1)

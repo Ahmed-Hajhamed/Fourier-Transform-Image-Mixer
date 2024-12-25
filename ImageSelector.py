@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QSlider, QWidget, QPushButton
+from PyQt5.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPixmap, QPainter, QPen, QImage
 import numpy as np
@@ -9,9 +9,6 @@ class ImageSelector(QWidget):
         self.inner_indices = None
         self.outer_indices = None
         self.layout_ = QVBoxLayout(self)
-        selector_label = QLabel()
-        selector_label.setFixedSize(300, 400)
-        selector_label.setScaledContents(True)
 
         self.image_label = ImageLabelSelector()
         self.image_label.setScaledContents(True)
@@ -20,8 +17,6 @@ class ImageSelector(QWidget):
 
         self.slider=slider
         self.slider.valueChanged.connect(self.updateRectangleSize)
-       
-        self.layout_.addWidget(selector_label)
 
         if pixmap:
             self.setPixmap(QPixmap(pixmap))
@@ -62,7 +57,7 @@ class ImageLabelSelector(QLabel):
         painter = QPainter(self)
         pen = QPen(Qt.red, 2, Qt.SolidLine)
         painter.setPen(pen)
-        
+
         label_width = self.width()
         label_height = self.height()
 
