@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QLabel, QGridLayout, QComboBox, QFrame, QSlider
 from PyQt5.QtCore import Qt
 FT_COMPONENTS = ["Magnitude", "Phase", "Real", "Imaginary"]
 
+
 class InputImageLabel(QLabel):
     def __init__(self, MainWindow, region_slider, parent=None):
         super().__init__(parent)
@@ -16,7 +17,7 @@ class InputImageLabel(QLabel):
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
         self.magnitude_real_slider = create_slider(1, 200)
         self.phase_imaginary_slider = create_slider(1, 200)
-        line = create_line(MainWindow.centralwidget, thick= True)
+        line = create_line()
         self.magnitude_real_label = QLabel("Magnitude")
         self.phase_imaginary_label = QLabel("Phase")
         combobox_label = QLabel("FT Component:")
@@ -69,8 +70,8 @@ class InputImageLabel(QLabel):
             self.image.adjust_brightness_contrast()
 
 
-def create_line(central_widget, horizontal = False, thick = True):
-        line = QFrame(central_widget) 
+def create_line( horizontal = False, thick = True):
+        line = QFrame() 
         line.setFrameShape(QFrame.HLine) if horizontal else line.setFrameShape(QFrame.VLine)
         line.setFrameShadow(QFrame.Sunken)
         if thick: line.setStyleSheet("border: 1px solid white;")

@@ -3,16 +3,6 @@ import numpy as np
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtGui import QPixmap, QImage
 
-def normalize_to_8bit(array):
-    norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
-    return norm
-
-def array_to_pixmap(array):
-    height, width = array.shape
-    bytes_per_line = width
-    image_data = array.tobytes()
-    qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
-    return QPixmap.fromImage(qimage)
 
 class ImageProcessor:
     def __init__(self, image_label):
@@ -28,7 +18,6 @@ class ImageProcessor:
         pixmap = array_to_pixmap(self.image)
         self.image_label.setPixmap(pixmap)
 
-
     def load_image(self, image_path= None):
         if image_path is None:
             image_path, _ = QFileDialog.getOpenFileName(
@@ -42,13 +31,11 @@ class ImageProcessor:
             self.adjust_brightness_contrast(reset= True)
             self.update_display()
 
-
     def resize_image(self, width = None, height = None):
         if width and height:
             self.image = cv2.resize(self.image, (width, height))
         self.compute_ft_components()
         self.update_display()
-
 
     def compute_ft_components(self):
         self.ft = np.fft.fft2(self.image)
@@ -59,10 +46,21 @@ class ImageProcessor:
         self.real_component = np.real(self.ft_shifted)
         self.imaginary_component = np.imag(self.ft_shifted)
 
-
     def adjust_brightness_contrast(self, reset= False):
         if reset:
             self.brightness, self.contrast = 0, 1.0
 
         self.image= cv2.convertScaleAbs(self.image, alpha=self.contrast, beta=self.brightness)                                                                   
         self.update_display()
+
+
+def normalize_to_8bit(array):
+    norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
+    return norm
+
+def array_to_pixmap(array):
+    height, width = array.shape
+    bytes_per_line = width
+    image_data = array.tobytes()
+    qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
+    return QPixmap.fromImage(qimage)
