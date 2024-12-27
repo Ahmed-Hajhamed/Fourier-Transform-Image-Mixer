@@ -15,9 +15,11 @@ class InputImageLabel(QLabel):
         self.image.resize_image()
         self.last_mouse_pos = QPoint()
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
+        
         self.magnitude_real_slider = create_slider(1, 200)
         self.phase_imaginary_slider = create_slider(1, 200)
         line = create_line()
+
         self.magnitude_real_label = QLabel("Magnitude")
         self.phase_imaginary_label = QLabel("Phase")
         combobox_label = QLabel("FT Component:")

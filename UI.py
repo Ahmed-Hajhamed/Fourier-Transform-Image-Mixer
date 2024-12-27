@@ -1,8 +1,8 @@
-from PyQt5 import QtCore
 from PyQt5.QtWidgets import (QLabel, QProgressBar, QGridLayout,
                 QComboBox, QRadioButton, QButtonGroup, QPushButton, QWidget)
 from ImageProcessor import ImageProcessor
 import InputImageLabel
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -63,16 +63,13 @@ class Ui_MainWindow(object):
         self.progress_bar.setValue(0)
 
         self.group_button_inner_outer = QButtonGroup(self.centralwidget)
-        self.inner_region_radio_button = create_radio_of_inner_outer(name="Inner Region",
+        self.inner_region_radio_button = create_radio_of_inner_outer(MainWindow, name="Inner Region",
                                                             gruop_button= self.group_button_inner_outer, state=True)
-        self.outer_region_radio_button = create_radio_of_inner_outer(name="Outer Region",
+        self.outer_region_radio_button = create_radio_of_inner_outer(MainWindow, name="Outer Region",
                                                             gruop_button= self.group_button_inner_outer)
-        self.sliders_weights_radio_button = create_radio_of_inner_outer(name="Sliders' Weight",
+        self.sliders_weights_radio_button = create_radio_of_inner_outer(MainWindow, name="Sliders' Weight",
                                                             gruop_button= self.group_button_inner_outer)
 
-        self.inner_region_radio_button.toggled.connect(MainWindow.mix_images)
-        self.outer_region_radio_button.toggled.connect(MainWindow.mix_images)
-        self.sliders_weights_radio_button.toggled.connect(MainWindow.mix_images)
 
         self.main_controls_layout.addWidget(self.mix_button, 0, 0, 1, 1)
         self.main_controls_layout.addWidget(line_7, 0, 1, 1, 1)
@@ -100,8 +97,6 @@ class Ui_MainWindow(object):
         self.main_gridLayout.addWidget(line_6, 1, 2, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
 
 def create_radio_button(MainWindow, gruop_button, state = False):
     radio_button = QRadioButton()
@@ -111,9 +106,10 @@ def create_radio_button(MainWindow, gruop_button, state = False):
     gruop_button.addButton(radio_button)
     return radio_button
 
-def create_radio_of_inner_outer(name, gruop_button, state = False):
+def create_radio_of_inner_outer(MainWindow, name, gruop_button, state = False):
     radio_button = QRadioButton()
     radio_button.setText(name)
     radio_button.setChecked(state)
+    radio_button.toggled.connect(MainWindow.mix_images)
     gruop_button.addButton(radio_button)
     return radio_button

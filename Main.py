@@ -6,6 +6,7 @@ from ImageMixingWorker import ImageMixingWorker
 from ImageProcessor import normalize_to_8bit, array_to_pixmap
 FT_PAIRS = [["Magnitude", "Phase"], ["Real", "Imaginary"]]
 
+
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()

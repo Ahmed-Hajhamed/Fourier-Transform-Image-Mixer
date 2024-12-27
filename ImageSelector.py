@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt, QRect
 from PyQt5.QtGui import QPainter, QPen
 import numpy as np
 
+
 class ImageSelector(QWidget):
     def __init__(self, slider = None, label_size=(200, 300),  parent=None):
         super().__init__(parent)

@@ -1,6 +1,7 @@
 from PyQt5.QtCore import QThread, pyqtSignal
 import numpy as np
 
+
 class ImageMixingWorker(QThread):
     progress = pyqtSignal(int)  
     result_ready = pyqtSignal(np.ndarray)
