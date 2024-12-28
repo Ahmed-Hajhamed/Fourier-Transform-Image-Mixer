@@ -1,13 +1,13 @@
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import sys
 from qt_material import apply_stylesheet
-from UI import Ui_MainWindow
+import UI 
 from ImageMixingWorker import ImageMixingWorker
 from ImageProcessor import normalize_to_8bit, array_to_pixmap
-FT_PAIRS = [["Magnitude", "Phase"], ["Real", "Imaginary"]]
+FT_PAIRS = ["Magnitude/Phase", "Real/Imaginary"]
 
 
-class MainWindow(QMainWindow, Ui_MainWindow):
+class MainWindow(QMainWindow, UI.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
@@ -15,22 +15,25 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reconstruction_pair = "Magnitude and Phase"
 
     def change_ft_component(self, current_text_on_combobox, image, ft_label):
-        if current_text_on_combobox == "Magnitude":
+        if image.image is None:
+            ft_label.clear()
+
+        elif current_text_on_combobox == "Magnitude":
             magnitude_8bit = normalize_to_8bit(image.magnitude_log)
             mag_pixmap = array_to_pixmap(magnitude_8bit)
             ft_label.setPixmap(mag_pixmap)
 
-        if current_text_on_combobox == "Phase":
+        elif current_text_on_combobox == "Phase":
             phase_8bit = normalize_to_8bit(image.phase_spectrum)
             phase_pixmap = array_to_pixmap(phase_8bit)
             ft_label.setPixmap(phase_pixmap)
 
-        if current_text_on_combobox == "Real":
+        elif current_text_on_combobox == "Real":
             real_8bit = normalize_to_8bit(image.real_component)
             real_pixmap = array_to_pixmap(real_8bit)
             ft_label.setPixmap(real_pixmap)
 
-        if current_text_on_combobox == "Imaginary":
+        elif current_text_on_combobox == "Imaginary":
             imaginary_8bit = normalize_to_8bit(image.imaginary_component)
             imaginary_pixmap = array_to_pixmap(imaginary_8bit)
             ft_label.setPixmap(imaginary_pixmap)
@@ -63,10 +66,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def change_reconstruction_pairs(self):
         self.reconstruction_pair = self.ft_pairs_combobox.currentText()
         for image_label in self.image_labels:
-            image_label.magnitude_real_label.setText(FT_PAIRS[self.ft_pairs_combobox.currentIndex()][0])
-            image_label.phase_imaginary_label.setText(FT_PAIRS[self.ft_pairs_combobox.currentIndex()][1])
-            image_label.magnitude_real_slider.setValue(100)
-            image_label.phase_imaginary_slider.setValue(100)
+            image_label.ft_pair_label.setText(FT_PAIRS[self.ft_pairs_combobox.currentIndex()])
+            image_label.weight_slider.setValue(100)
+            image_label.ft_combobox.clear()
+            image_label.ft_combobox.addItems(UI.InputImageLabel.FT_COMPONENTS[self.ft_pairs_combobox.currentIndex()])
+            # image_label.phase_imaginary_label.setText(FT_PAIRS[self.ft_pairs_combobox.currentIndex()][1])
+            # image_label.phase_imaginary_slider.setValue(100)
 
     def switch_output_label(self):
         if self.output_1_radiobutton.isChecked():
@@ -75,9 +80,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.output_label = self.output_2_label
 
     def resize_images(self):
+        heights, widths = [], []
         for image_label in self.image_labels: #checks minimum size
-            self.minimum_height = min(image_label.image.image.shape[0])
-            self.minimum_width = min(image_label.image.image.shape[1])
+            if image_label.image.image is None:
+                continue
+            heights.append(image_label.image.image.shape[0])
+            widths.append(image_label.image.image.shape[1])
+
+        self.minimum_height = min(heights) if heights != [] else 0
+        self.minimum_width = min(widths)   if widths != [] else 0
 
         for image_label in self.image_labels: #resizes images
             image_label.image.resize_image(self.minimum_width, self.minimum_height)

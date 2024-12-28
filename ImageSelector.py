@@ -5,7 +5,7 @@ import numpy as np
 
 
 class ImageSelector(QWidget):
-    def __init__(self, slider = None, label_size=(200, 300),  parent=None):
+    def __init__(self, slider = None, label_size=(300, 400),  parent=None):
         super().__init__(parent)
         self.inner_indices = None
         self.outer_indices = None
@@ -36,6 +36,8 @@ class ImageSelector(QWidget):
     def get_outer_region(self):
         self.outer_indices =  self.image_label.getModifiedIndices(inner=False)
 
+    def clear(self):
+        self.image_label.clear()
 
 class ImageLabelSelector(QLabel):
     def __init__(self, *args, **kwargs):
@@ -52,7 +54,7 @@ class ImageLabelSelector(QLabel):
             return
 
         painter = QPainter(self)
-        pen = QPen(Qt.red, 2, Qt.SolidLine)
+        pen = QPen(Qt.red, 2, Qt.DashLine)
         painter.setPen(pen)
 
         label_width = self.width()

@@ -13,6 +13,8 @@ class Ui_MainWindow(object):
         self.output_layout = QGridLayout()
         self.main_controls_layout = QGridLayout()
         self.selected_region_slider = InputImageLabel.create_slider(1, 90)
+        self.selected_region_slider.sliderReleased.connect(MainWindow.mix_images)
+        self.selected_region_slider.valueChanged.connect(self.switch_to_region_mode)
 
         line_1 = InputImageLabel.create_line()
         line_2 = InputImageLabel.create_line()
@@ -64,11 +66,11 @@ class Ui_MainWindow(object):
 
         self.group_button_inner_outer = QButtonGroup(self.centralwidget)
         self.inner_region_radio_button = create_radio_of_inner_outer(MainWindow, name="Inner Region",
-                                                            gruop_button= self.group_button_inner_outer, state=True)
+                                                            gruop_button= self.group_button_inner_outer)
         self.outer_region_radio_button = create_radio_of_inner_outer(MainWindow, name="Outer Region",
                                                             gruop_button= self.group_button_inner_outer)
         self.sliders_weights_radio_button = create_radio_of_inner_outer(MainWindow, name="Sliders' Weight",
-                                                            gruop_button= self.group_button_inner_outer)
+                                                            gruop_button= self.group_button_inner_outer, state= True)
 
 
         self.main_controls_layout.addWidget(self.mix_button, 0, 0, 1, 1)
@@ -76,9 +78,9 @@ class Ui_MainWindow(object):
         self.main_controls_layout.addWidget(self.progress_label, 0, 2, 1, 1)
         self.main_controls_layout.addWidget(self.progress_bar, 0, 3, 1, 1)
         self.main_controls_layout.addWidget(self.select_region_label, 2, 0, 1, 1)
-        self.main_controls_layout.addWidget(self.inner_region_radio_button, 1, 0, 1, 2)
-        self.main_controls_layout.addWidget(self.outer_region_radio_button, 1, 1, 1, 2)
-        self.main_controls_layout.addWidget(self.sliders_weights_radio_button, 1, 3, 1, 2)
+        self.main_controls_layout.addWidget(self.inner_region_radio_button, 1, 1, 1, 2)
+        self.main_controls_layout.addWidget(self.outer_region_radio_button, 1, 3, 1, 2)
+        self.main_controls_layout.addWidget(self.sliders_weights_radio_button, 1, 0, 1, 2)
         self.main_controls_layout.addWidget(self.selected_region_slider, 2, 2, 1, 2)
         self.main_controls_layout.addWidget(self.ft_pairs_label, 3, 0, 1, 1)
         self.main_controls_layout.addWidget(self.ft_pairs_combobox, 3, 2, 1, 2)
@@ -97,6 +99,10 @@ class Ui_MainWindow(object):
         self.main_gridLayout.addWidget(line_6, 1, 2, 1, 1)
 
         MainWindow.setCentralWidget(self.centralwidget)
+
+    def switch_to_region_mode(self):
+        if not self.inner_region_radio_button.isChecked() and not self.outer_region_radio_button.isChecked():
+            self.inner_region_radio_button.setChecked(True)
 
 def create_radio_button(MainWindow, gruop_button, state = False):
     radio_button = QRadioButton()

@@ -3,7 +3,7 @@ import ImageSelector
 from PyQt5.QtCore import QPoint
 from PyQt5.QtWidgets import QLabel, QGridLayout, QComboBox, QFrame, QSlider
 from PyQt5.QtCore import Qt
-FT_COMPONENTS = ["Magnitude", "Phase", "Real", "Imaginary"]
+FT_COMPONENTS = [["Magnitude", "Phase"], ["Real", "Imaginary"]]
 
 
 class InputImageLabel(QLabel):
@@ -16,42 +16,47 @@ class InputImageLabel(QLabel):
         self.last_mouse_pos = QPoint()
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
         
-        self.magnitude_real_slider = create_slider(1, 200)
-        self.phase_imaginary_slider = create_slider(1, 200)
+        self.weight_slider = create_slider(1, 200)
+        # self.phase_imaginary_slider = create_slider(1, 200)
         line = create_line()
 
-        self.magnitude_real_label = QLabel("Magnitude")
-        self.phase_imaginary_label = QLabel("Phase")
+        self.ft_pair_label = QLabel("Magnitude/Phase")
+        # self.phase_imaginary_label = QLabel("Phase")
         combobox_label = QLabel("FT Component:")
 
         self.ft_combobox = QComboBox()
-        self.ft_combobox.addItems(FT_COMPONENTS)
+        self.ft_combobox.addItems(FT_COMPONENTS[0])
         self.ft_combobox.currentIndexChanged.connect(lambda: MainWindow.change_ft_component(
                         self.ft_combobox.currentText(), self.image, self.ft_label))
         
-        self.magnitude_real_slider.valueChanged.connect(MainWindow.mix_images)
-        self.phase_imaginary_slider.valueChanged.connect(MainWindow.mix_images)
+        self.weight_slider.valueChanged.connect(MainWindow.mix_images)
+        # self.phase_imaginary_slider.valueChanged.connect(MainWindow.mix_images)
 
         MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
 
         self.image_layout = QGridLayout()
         self.image_layout.addWidget(self, 0, 0, 1, 2)
         self.image_layout.addWidget(self.ft_label, 0, 3, 1, 2)
-        self.image_layout.addWidget(self.magnitude_real_label, 1, 0)
-        self.image_layout.addWidget(self.magnitude_real_slider, 1, 1)
+        self.image_layout.addWidget(self.ft_pair_label, 1, 0, 2, 1)
+        self.image_layout.addWidget(self.weight_slider, 1, 1, 2, 1)
         self.image_layout.addWidget(line, 1, 2, 2, 1)
         self.image_layout.addWidget(combobox_label, 1, 3, 2, 1)
         self.image_layout.addWidget(self.ft_combobox, 1, 4, 2, 1)
-        self.image_layout.addWidget(self.phase_imaginary_label, 2, 0)
-        self.image_layout.addWidget(self.phase_imaginary_slider, 2, 1)
+        # self.image_layout.addWidget(self.phase_imaginary_label, 2, 0)
+        # self.image_layout.addWidget(self.phase_imaginary_slider, 2, 1)
 
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.image.load_image()
-            self.MainWindow.resize_images()
-            self.MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
-            self.magnitude_real_slider.setValue(100)
-            self.phase_imaginary_slider.setValue(100)
+
+        elif event.button() == Qt.RightButton:
+            self.image.image = None
+            self.image.update_display()
+
+        self.MainWindow.resize_images()
+        self.MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
+        self.weight_slider.setValue(100)
+        # self.phase_imaginary_slider.setValue(100)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -72,11 +77,11 @@ class InputImageLabel(QLabel):
             self.image.adjust_brightness_contrast()
 
 
-def create_line( horizontal = False, thick = True):
+def create_line(horizontal = False, thick = True):
         line = QFrame() 
         line.setFrameShape(QFrame.HLine) if horizontal else line.setFrameShape(QFrame.VLine)
         line.setFrameShadow(QFrame.Sunken)
-        if thick: line.setStyleSheet("border: 1px solid white;")
+        if thick: line.setStyleSheet("border: 1px solid purple;")
         return line
 
 def create_slider(minimum, maximum):
