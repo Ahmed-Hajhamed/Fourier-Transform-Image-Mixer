@@ -14,7 +14,11 @@ class ImageMixingWorker(QThread):
         self.is_canceled = False  
 
     def run(self):
-        number_of_images = len(self.image_labels)
+        number_of_images = 0
+        for image_label in self.image_labels:
+            if image_label.image.image is not None:
+                number_of_images += 1
+            
         magnitude_spectrum = np.zeros_like(self.image_labels[0].image.magnitude_spectrum, dtype=np.float64)
         phase_spectrum_real = np.zeros_like(self.image_labels[0].image.phase_spectrum, dtype=np.float64)
         phase_spectrum_imag = np.zeros_like(self.image_labels[0].image.phase_spectrum, dtype=np.float64)
