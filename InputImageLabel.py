@@ -7,9 +7,10 @@ FT_COMPONENTS = [["Magnitude", "Phase"], ["Real", "Imaginary"]]
 
 
 class InputImageLabel(QLabel):
-    def __init__(self, MainWindow, region_slider, parent=None):
+    def __init__(self, MainWindow, region_slider, parent=None, removable = False):
         super().__init__(parent)
         self.MainWindow = MainWindow
+        self.removable = removable
         self.image = ImageProcessor.ImageProcessor(self)
         self.image.load_image("imgaes/Screen Shot 2024-11-10 at 10.27.12 AM.png")
         self.image.resize_image()
@@ -49,7 +50,7 @@ class InputImageLabel(QLabel):
         if event.button() == Qt.LeftButton:
             self.image.load_image()
 
-        elif event.button() == Qt.RightButton:
+        elif event.button() == Qt.RightButton and self.removable:
             self.image.image = None
             self.image.update_display()
 

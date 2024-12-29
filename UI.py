@@ -28,8 +28,10 @@ class Ui_MainWindow(object):
 
         self.image_1_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
         self.image_2_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
-        self.image_3_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
-        self.image_4_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
+        self.image_3_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget, 
+                                                             removable= True)
+        self.image_4_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget,
+                                                             removable= True)
         self.image_labels = [self.image_1_label, self.image_2_label, self.image_3_label, self.image_4_label]
 
         self.output_1_label = QLabel(self.centralwidget)

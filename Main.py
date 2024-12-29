@@ -4,6 +4,9 @@ from qt_material import apply_stylesheet
 import UI 
 from ImageMixingWorker import ImageMixingWorker
 from ImageProcessor import normalize_to_8bit, array_to_pixmap
+import logging
+logging.basicConfig(level=logging.INFO, filename="logging_file.log", format='%(asctime)s:%(levelname)s:%(message)s', filemode='w') 
+
 FT_PAIRS = ["Magnitude/Phase", "Real/Imaginary"]
 
 
@@ -13,6 +16,8 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
         self.setupUi(self)
         self.output_label = self.output_1_label
         self.reconstruction_pair = "Magnitude and Phase"
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
 
     def change_ft_component(self, current_text_on_combobox, image, ft_label):
         if image.image is None:
@@ -39,7 +44,9 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
             ft_label.setPixmap(imaginary_pixmap)
 
     def mix_images(self):
+        self.logger.debug("Mixing Images Started")
         if hasattr(self, "worker") and self.worker.isRunning():
+            self.logger.debug("Canceleed running mixing operation")
             self.worker.cancel()
             self.worker.wait()
         if self.inner_region_radio_button.isChecked():
@@ -80,6 +87,7 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
             self.output_label = self.output_2_label
 
     def resize_images(self):
+        self.logger.debug("New Image Loaded, finding smallest dimensions")
         heights, widths = [], []
         for image_label in self.image_labels: #checks minimum size
             if image_label.image.image is None:
@@ -90,6 +98,8 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
         self.minimum_height = min(heights) if heights != [] else 0
         self.minimum_width = min(widths)   if widths != [] else 0
 
+        self.logger.debug(f"Minimum Height = {self.minimum_height}")
+        self.logger.debug(f"Minimum Width = {self.minimum_width}")
         for image_label in self.image_labels: #resizes images
             image_label.image.resize_image(self.minimum_width, self.minimum_height)
     
