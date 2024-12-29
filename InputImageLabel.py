@@ -12,7 +12,7 @@ class InputImageLabel(QLabel):
         self.MainWindow = MainWindow
         self.removable = removable
         self.image = ImageProcessor.ImageProcessor(self)
-        self.image.load_image("imgaes/Screen Shot 2024-11-10 at 10.27.12 AM.png")
+        self.image.load_image("imgaes\IMG_20230807_000054_971.jpg")
         self.image.resize_image()
         self.last_mouse_pos = QPoint()
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)

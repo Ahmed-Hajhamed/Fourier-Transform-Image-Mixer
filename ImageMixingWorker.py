@@ -23,6 +23,7 @@ class ImageMixingWorker(QThread):
         complete_real = False
         complete_imaginary = False
         magnitude_spectrum = np.zeros_like(self.image_labels[0].image.magnitude_spectrum, dtype=np.float64)
+        phase_spectrum = np.zeros_like(self.image_labels[0].image.phase_spectrum, dtype=np.float64)
         phase_spectrum_real = np.zeros_like(self.image_labels[0].image.phase_spectrum, dtype=np.float64)
         phase_spectrum_imag = np.zeros_like(self.image_labels[0].image.phase_spectrum, dtype=np.float64)
         real_component = np.zeros_like(self.image_labels[0].image.real_component, dtype=np.float64)
@@ -48,6 +49,8 @@ class ImageMixingWorker(QThread):
             phase_spectrum = np.arctan2(phase_spectrum_imag, phase_spectrum_real)
             masked_magnitude_spectrum = magnitude_spectrum * self.band_mask 
             masked_phase_spectrum = phase_spectrum * self.band_mask
+            if not complete_magnitude: magnitude_spectrum = np.ones_like(self.image_labels[0].image.magnitude_spectrum, dtype=np.float64)
+            complete_magnitude = True
             ft_shifted = (masked_magnitude_spectrum / number_of_images) * np.exp(1j * masked_phase_spectrum)
 
         elif self.reconstruction_pair == "Real and Imaginary" and self.band_mask is not None:
@@ -86,9 +89,11 @@ class ImageMixingWorker(QThread):
                     weight = image_label.weight_slider.value() / (100.0 * number_of_images)
                     phase_spectrum_real += weight * np.cos(image_label.image.phase_spectrum)
                     phase_spectrum_imag += weight * np.sin(image_label.image.phase_spectrum)
-                self.progress.emit((idx + 1) * 100 // (number_of_images + 1))
 
+                self.progress.emit((idx + 1) * 100 // (number_of_images + 1))
             phase_spectrum = np.arctan2(phase_spectrum_imag, phase_spectrum_real)
+            if not complete_magnitude: magnitude_spectrum = np.ones_like(self.image_labels[0].image.magnitude_spectrum, dtype=np.float64)
+            complete_magnitude = True
             ft_shifted = (magnitude_spectrum / number_of_images) * np.exp(1j * phase_spectrum)   
 
         elif self.reconstruction_pair == "Real and Imaginary" and self.band_mask is None:
@@ -115,16 +120,10 @@ class ImageMixingWorker(QThread):
         mixed_image = np.fft.ifft2(ft_inverse_shift)
         self.progress.emit(100)
         mixed_image = np.abs(mixed_image)
-        if (complete_magnitude and complete_phase) or (complete_real and complete_imaginary):
+        if (complete_magnitude and complete_phase) or (complete_real or complete_imaginary):
             self.result_ready.emit(mixed_image)
-        elif complete_magnitude and not (complete_phase and complete_real and complete_imaginary):
-            self.result_ready.emit(np.log1p(magnitude_spectrum))
-        elif complete_phase and not (complete_magnitude and complete_real and complete_imaginary):
-            self.result_ready.emit(phase_spectrum)
-        elif complete_real and not (complete_phase and complete_magnitude and complete_imaginary):
-            self.result_ready.emit(real_component)
-        elif complete_imaginary and not (complete_phase and complete_real and complete_magnitude):
-            self.result_ready.emit(imaginary_component)
+        elif not complete_phase and self.reconstruction_pair == "Magnitude and Phase":
+            self.result_ready.emit(np.log1p(mixed_image))
 
     def cancel(self):
         self.is_canceled = True
