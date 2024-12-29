@@ -73,12 +73,9 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
     def change_reconstruction_pairs(self):
         self.reconstruction_pair = self.ft_pairs_combobox.currentText()
         for image_label in self.image_labels:
-            image_label.ft_pair_label.setText(FT_PAIRS[self.ft_pairs_combobox.currentIndex()])
             image_label.weight_slider.setValue(100)
             image_label.ft_combobox.clear()
             image_label.ft_combobox.addItems(UI.InputImageLabel.FT_COMPONENTS[self.ft_pairs_combobox.currentIndex()])
-            # image_label.phase_imaginary_label.setText(FT_PAIRS[self.ft_pairs_combobox.currentIndex()][1])
-            # image_label.phase_imaginary_slider.setValue(100)
 
     def switch_output_label(self):
         if self.output_1_radiobutton.isChecked():

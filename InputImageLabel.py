@@ -18,11 +18,9 @@ class InputImageLabel(QLabel):
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
         
         self.weight_slider = create_slider(1, 200)
-        # self.phase_imaginary_slider = create_slider(1, 200)
         line = create_line()
 
-        self.ft_pair_label = QLabel("Magnitude/Phase")
-        # self.phase_imaginary_label = QLabel("Phase")
+        self.ft_pair_label = QLabel("Weight:")
         combobox_label = QLabel("FT Component:")
 
         self.ft_combobox = QComboBox()
@@ -31,7 +29,6 @@ class InputImageLabel(QLabel):
                         self.ft_combobox.currentText(), self.image, self.ft_label))
         
         self.weight_slider.valueChanged.connect(MainWindow.mix_images)
-        # self.phase_imaginary_slider.valueChanged.connect(MainWindow.mix_images)
 
         MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
 
@@ -43,8 +40,6 @@ class InputImageLabel(QLabel):
         self.image_layout.addWidget(line, 1, 2, 2, 1)
         self.image_layout.addWidget(combobox_label, 1, 3, 2, 1)
         self.image_layout.addWidget(self.ft_combobox, 1, 4, 2, 1)
-        # self.image_layout.addWidget(self.phase_imaginary_label, 2, 0)
-        # self.image_layout.addWidget(self.phase_imaginary_slider, 2, 1)
 
     def mouseDoubleClickEvent(self, event):
         if event.button() == Qt.LeftButton:
