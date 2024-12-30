@@ -26,15 +26,15 @@ A Python desktop application that allows users to mix Fourier transform componen
    ```bash
    git clone https://github.com/Ahmed-Hajhamed/Task-4-DSP
    ```
-2. Install required dependencies::
+2. Install required dependencies:
   ```bash
   pip install -r requirements.txt
   ```
-Usage:
+3. Usage:
 Run Main.py class:
-    ```bash
-    python Main.py
-    ```
+  ```bash
+  python Main.py
+  ```
 Load images by double-clicking the corresponding labels.
 Use the combobox to select Fourier transform components to display.
 Adjust sliders to set weights for each image in the mixing operation.
