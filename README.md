@@ -1,6 +1,7 @@
-![Python 3 11 12_30_2024 9_11_18 PM](https://github.com/user-attachments/assets/8b1972e3-dbb5-4b61-b948-53d254fb2543)# Fourier Image Mixer
+## Fourier Transform Image Mixer
+![Python 3 11 12_30_2024 9_11_18 PM](https://github.com/user-attachments/assets/8b1972e3-dbb5-4b61-b948-53d254fb2543)
 
-A Python desktop application that allows users to mix Fourier transform components (e.g., magnitude/phase or real/imaginary) from up to four images into one, offering a powerful tool for creative and technical image manipulation.
+A Python desktop application that allows users to mix Fourier transform components (magnitude/phase or real/imaginary) components from up to four images into one, offering a powerful tool for creative and technical image manipulation.
 
 ---
 
