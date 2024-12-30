@@ -12,12 +12,12 @@ class InputImageLabel(QLabel):
         self.MainWindow = MainWindow
         self.removable = removable
         self.image = ImageProcessor.ImageProcessor(self)
-        self.image.load_image("imgaes\IMG_20230807_000054_971.jpg")
+        self.image.load_image("Images\\elon-musk-9781982181284_hr.jpg")
         self.image.resize_image()
         self.last_mouse_pos = QPoint()
         self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
         
-        self.weight_slider = create_slider(1, 200)
+        self.weight_slider = create_slider(0, 200)
         line = create_line()
 
         self.ft_pair_label = QLabel("Weight:")
@@ -25,6 +25,7 @@ class InputImageLabel(QLabel):
 
         self.ft_combobox = QComboBox()
         self.ft_combobox.addItems(FT_COMPONENTS[0])
+        self.ft_combobox.currentIndexChanged.connect(MainWindow.mix_images)
         self.ft_combobox.currentIndexChanged.connect(lambda: MainWindow.change_ft_component(
                         self.ft_combobox.currentText(), self.image, self.ft_label))
         
@@ -51,8 +52,8 @@ class InputImageLabel(QLabel):
 
         self.MainWindow.resize_images()
         self.MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
+        self.MainWindow.mix_images()
         self.weight_slider.setValue(100)
-        # self.phase_imaginary_slider.setValue(100)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:

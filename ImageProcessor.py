@@ -26,7 +26,7 @@ class ImageProcessor:
             image_path, _ = QFileDialog.getOpenFileName(
                 None, 
                 "Open File", 
-                "", 
+                "Images", 
                 "All Files (*.*);;Text Files (*.txt);;Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif)"
             )
         if image_path:

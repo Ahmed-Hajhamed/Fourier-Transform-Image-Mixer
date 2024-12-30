@@ -5,7 +5,7 @@ import UI
 from ImageMixingWorker import ImageMixingWorker
 from ImageProcessor import normalize_to_8bit, array_to_pixmap
 import logging
-logging.basicConfig(level=logging.INFO, filename="logging_file.log", format='%(asctime)s:%(levelname)s:%(message)s', filemode='w') 
+logging.basicConfig(level=logging.INFO, filename="Logging\\logging_file.log", format='%(asctime)s:%(levelname)s:%(message)s', filemode='w') 
 
 FT_PAIRS = ["Magnitude/Phase", "Real/Imaginary"]
 
@@ -18,6 +18,10 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
         self.reconstruction_pair = "Magnitude and Phase"
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.DEBUG)
+        self.image_2_label.image.load_image("Images\\Meeting_with_Bill_Gates_-_Nov._8,_2019_(49054512147)_(cropped).jpg")
+        self.image_3_label.image.load_image("Images\\tesla-1.jpg")
+        self.image_4_label.image.load_image("Images\\unnamed.jpg")
+        self.resize_images()
 
     def change_ft_component(self, current_text_on_combobox, image, ft_label):
         if image.image is None:
