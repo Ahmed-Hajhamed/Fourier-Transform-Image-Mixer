@@ -25,26 +25,31 @@ A Python desktop application that allows users to mix Fourier transform componen
 1. Clone the repository:
    ```bash
    git clone https://github.com/Ahmed-Hajhamed/Task-4-DSP
+   ```
 2. Install required dependencies::
   ```bash
   pip install -r requirements.txt
--Usage
-Run the application:
+  ```
+Usage:
+Run Main.py class:
     ```bash
     python Main.py
-
+    ```
 Load images by double-clicking the corresponding labels.
 Use the combobox to select Fourier transform components to display.
 Adjust sliders to set weights for each image in the mixing operation.
 Use the region selector to refine the Fourier component regions.
 View the mixed result in the output viewports.
+
 ## Requirements
 Python: Version 3.8 or higher
+
 ## Libraries:
 OpenCV (cv2)
 PyQt5
 QThread
 NumPy
+
 ## Screenshots
 -Double-click to Load and Image and use either Magnitude/Phase or Real/Imaginary Components:
 ![Python 3 11 12_30_2024 9_18_58 PM](https://github.com/user-attachments/assets/0119b4a4-4137-4b90-9433-b07fb30b87f6)
@@ -62,5 +67,3 @@ Contributions are welcome! If you have suggestions for improvements or new featu
 
 ## Contact
 For questions or issues, please reach out via email: ahmed.hajhamed03@eng-st.cu.edu.eg
-
-Let us know if you'd like any adjustments or additions!
