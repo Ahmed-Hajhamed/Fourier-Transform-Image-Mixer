@@ -1,8 +1,37 @@
-2024-12-30 21:18:38,423:DEBUG:New Image Loaded, finding smallest dimensions
-2024-12-30 21:18:38,429:DEBUG:Minimum Height = 755
-2024-12-30 21:18:38,429:DEBUG:Minimum Width = 563
-2024-12-30 21:18:49,873:DEBUG:New Image Loaded, finding smallest dimensions
-2024-12-30 21:18:49,873:DEBUG:Minimum Height = 450
-2024-12-30 21:18:49,873:DEBUG:Minimum Width = 563
-2024-12-30 21:18:50,016:DEBUG:Mixing Images Started
-2024-12-30 21:18:53,177:DEBUG:Mixing Images Started
+2025-01-02 02:38:09,102:DEBUG:New Image Loaded, finding smallest dimensions
+2025-01-02 02:38:09,102:DEBUG:Minimum Height = 755
+2025-01-02 02:38:09,102:DEBUG:Minimum Width = 563
+2025-01-02 02:38:14,899:DEBUG:Mixing Images Started
+2025-01-02 02:38:17,208:DEBUG:Mixing Images Started
+2025-01-02 02:38:18,516:DEBUG:Mixing Images Started
+2025-01-02 02:38:18,532:DEBUG:Mixing Images Started
+2025-01-02 02:38:18,532:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:18,720:DEBUG:Mixing Images Started
+2025-01-02 02:38:21,170:DEBUG:Mixing Images Started
+2025-01-02 02:38:22,323:DEBUG:Mixing Images Started
+2025-01-02 02:38:25,387:DEBUG:Mixing Images Started
+2025-01-02 02:38:28,383:DEBUG:Mixing Images Started
+2025-01-02 02:38:30,799:DEBUG:Mixing Images Started
+2025-01-02 02:38:30,815:DEBUG:Mixing Images Started
+2025-01-02 02:38:30,815:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:30,841:DEBUG:Mixing Images Started
+2025-01-02 02:38:30,841:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:30,846:DEBUG:Mixing Images Started
+2025-01-02 02:38:30,846:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:30,862:DEBUG:Mixing Images Started
+2025-01-02 02:38:30,862:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:30,862:DEBUG:Mixing Images Started
+2025-01-02 02:38:30,862:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:30,879:DEBUG:Mixing Images Started
+2025-01-02 02:38:30,879:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:31,256:DEBUG:Mixing Images Started
+2025-01-02 02:38:31,256:DEBUG:Mixing Images Started
+2025-01-02 02:38:31,256:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:31,288:DEBUG:Mixing Images Started
+2025-01-02 02:38:31,288:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:31,304:DEBUG:Mixing Images Started
+2025-01-02 02:38:31,304:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:31,304:DEBUG:Mixing Images Started
+2025-01-02 02:38:31,304:DEBUG:Cancelled running mixing operation
+2025-01-02 02:38:33,341:DEBUG:Mixing Images Started
+2025-01-02 02:38:35,647:DEBUG:Mixing Images Started

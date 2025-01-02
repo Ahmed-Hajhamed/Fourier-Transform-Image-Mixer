@@ -3,10 +3,9 @@ import sys
 from qt_material import apply_stylesheet
 import UI 
 from ImageMixingWorker import ImageMixingWorker
-from ImageProcessor import normalize_to_8bit, array_to_pixmap
+from ImageProcessor import set_array_to_pixmap
 import logging
 logging.basicConfig(level=logging.INFO, filename="Logging\\logging_file.log", format='%(asctime)s:%(levelname)s:%(message)s', filemode='w') 
-
 FT_PAIRS = ["Magnitude/Phase", "Real/Imaginary"]
 
 
@@ -28,29 +27,21 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
             ft_label.clear()
 
         elif current_text_on_combobox == "Magnitude":
-            magnitude_8bit = normalize_to_8bit(image.magnitude_log)
-            mag_pixmap = array_to_pixmap(magnitude_8bit)
-            ft_label.setPixmap(mag_pixmap)
+            set_array_to_pixmap(image.magnitude_log, ft_label)
 
         elif current_text_on_combobox == "Phase":
-            phase_8bit = normalize_to_8bit(image.phase_spectrum)
-            phase_pixmap = array_to_pixmap(phase_8bit)
-            ft_label.setPixmap(phase_pixmap)
+            set_array_to_pixmap(image.phase_spectrum, ft_label)
 
         elif current_text_on_combobox == "Real":
-            real_8bit = normalize_to_8bit(image.real_component)
-            real_pixmap = array_to_pixmap(real_8bit)
-            ft_label.setPixmap(real_pixmap)
+            set_array_to_pixmap(image.real_component, ft_label)
 
         elif current_text_on_combobox == "Imaginary":
-            imaginary_8bit = normalize_to_8bit(image.imaginary_component)
-            imaginary_pixmap = array_to_pixmap(imaginary_8bit)
-            ft_label.setPixmap(imaginary_pixmap)
+            set_array_to_pixmap(image.imaginary_component, ft_label)
 
     def mix_images(self):
         self.logger.debug("Mixing Images Started")
         if hasattr(self, "worker") and self.worker.isRunning():
-            self.logger.debug("Canceleed running mixing operation")
+            self.logger.debug("Cancelled running mixing operation")
             self.worker.cancel()
             self.worker.wait()
         if self.inner_region_radio_button.isChecked():
@@ -69,9 +60,7 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
         self.progress_bar.setValue(value) 
 
     def display_mixed_image(self, mixed_image):
-        mixed_image_8bit = normalize_to_8bit(mixed_image)
-        mixed_image_pixmap = array_to_pixmap(mixed_image_8bit)
-        self.output_label.setPixmap(mixed_image_pixmap)
+        set_array_to_pixmap(mixed_image, self.output_label)
         self.progress_bar.setValue(0)
 
     def change_reconstruction_pairs(self):
@@ -96,14 +85,15 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
             heights.append(image_label.image.image.shape[0])
             widths.append(image_label.image.image.shape[1])
 
-        self.minimum_height = min(heights) if heights != [] else 0
-        self.minimum_width = min(widths)   if widths != [] else 0
+        self.minimum_height = min(heights)
+        self.minimum_width = min(widths)
 
         self.logger.debug(f"Minimum Height = {self.minimum_height}")
         self.logger.debug(f"Minimum Width = {self.minimum_width}")
         for image_label in self.image_labels: #resizes images
             image_label.image.resize_image(self.minimum_width, self.minimum_height)
-    
+            self.change_ft_component(image_label.ft_combobox.currentText(), image_label.image, image_label.ft_label)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     apply_stylesheet(app, "dark_purple.xml")

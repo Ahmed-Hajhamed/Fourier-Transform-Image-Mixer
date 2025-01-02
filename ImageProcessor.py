@@ -18,8 +18,7 @@ class ImageProcessor:
         if self.image is None:
             self.image_label.clear()
         else:
-            pixmap = array_to_pixmap(self.image)
-            self.image_label.setPixmap(pixmap)
+            set_array_to_pixmap(self.image, self.image_label, normalize= False)
 
     def load_image(self, image_path= None):
         if image_path is None:
@@ -63,9 +62,12 @@ def normalize_to_8bit(array):
     norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
     return norm
 
-def array_to_pixmap(array):
+def set_array_to_pixmap(array, label, normalize = True):
+    if normalize:
+        array = normalize_to_8bit(array)
     height, width = array.shape
     bytes_per_line = width
     image_data = array.tobytes()
     qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
-    return QPixmap.fromImage(qimage)
+    pixmap = QPixmap.fromImage(qimage)
+    label.setPixmap(pixmap)
