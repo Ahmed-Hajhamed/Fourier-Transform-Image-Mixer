@@ -5,7 +5,8 @@ import UI
 from ImageMixingWorker import ImageMixingWorker
 from ImageProcessor import set_array_to_pixmap
 import logging
-logging.basicConfig(level=logging.INFO, filename="Logging\\logging_file.log", format='%(asctime)s:%(levelname)s:%(message)s', filemode='w') 
+logging.basicConfig(level=logging.INFO, filename="Logging\\logging_file.log",
+                     format='%(asctime)s:%(levelname)s:%(message)s', filemode='w') 
 FT_PAIRS = ["Magnitude/Phase", "Real/Imaginary"]
 
 
@@ -15,11 +16,11 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
         self.setupUi(self)
         self.output_label = self.output_1_label
         self.reconstruction_pair = "Magnitude and Phase"
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
         self.image_2_label.image.load_image("Images\\Nikola-Tesla.jpg")
         self.image_3_label.image.load_image("Images\\Bill-Gates.jpg")
         self.image_4_label.image.load_image("Images\\Elon-Musk.jpg")
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
         self.resize_images()
 
     def change_ft_component(self, current_text_on_combobox, image, ft_label):
@@ -44,6 +45,7 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
             self.logger.debug("Cancelled running mixing operation")
             self.worker.cancel()
             self.worker.wait()
+
         if self.inner_region_radio_button.isChecked():
             band_mask = self.image_1_label.ft_label.inner_indices
         elif self.outer_region_radio_button.isChecked():

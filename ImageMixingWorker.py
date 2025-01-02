@@ -20,7 +20,6 @@ class ImageMixingWorker(QThread):
                 self.number_of_images += 1.0
 
         self.magnitude_spectrum = np.zeros_like(self.image_labels[0].image.magnitude_spectrum, dtype=np.float64)
-        self.phase_spectrum = np.zeros_like(self.image_labels[0].image.phase_spectrum, dtype=np.float64)
         self.phase_spectrum_real = np.zeros_like(self.image_labels[0].image.phase_spectrum, dtype=np.float64)
         self.phase_spectrum_imaginary = np.zeros_like(self.image_labels[0].image.phase_spectrum, dtype=np.float64)
         self.real_component = np.zeros_like(self.image_labels[0].image.real_component, dtype=np.float64)
@@ -35,7 +34,6 @@ class ImageMixingWorker(QThread):
                     continue
 
                 if image_label.ft_combobox.currentText() == "Magnitude":
-                    print(f"mag:{image_label.image.magnitude_spectrum}")
                     self.magnitude_spectrum +=  (image_label.image.magnitude_spectrum\
                                                             * image_label.weight_slider.value() / 100)
                     
@@ -47,9 +45,9 @@ class ImageMixingWorker(QThread):
                 self.progress.emit((idx + 1) * 100 // (self.number_of_images + 1))
 
             self.phase_spectrum = np.arctan2(self.phase_spectrum_imaginary, self.phase_spectrum_real)
-            self.log_scaled_output = np.all(np.isclose(self.phase_spectrum, 0))
+            self.log_scaled_output = not np.any(self.phase_spectrum)
 
-            if np.all(np.isclose(self.magnitude_spectrum, 0)): 
+            if not np.any(self.magnitude_spectrum): 
                 self.magnitude_spectrum = np.ones_like(self.image_labels[0].image.magnitude_spectrum, dtype=np.float64)\
                                                                 * self.number_of_images
             ft_shifted = (self.magnitude_spectrum / self.number_of_images) * np.exp(1j * self.phase_spectrum)

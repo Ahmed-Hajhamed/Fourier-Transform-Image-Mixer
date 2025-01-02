@@ -58,10 +58,6 @@ class ImageProcessor:
             self.update_display()
 
 
-def normalize_to_8bit(array):
-    norm = (255 * (array - array.min()) / (array.max() - array.min())).astype(np.uint8)
-    return norm
-
 def set_array_to_pixmap(array, label, normalize = True):
     if normalize:
         array = normalize_to_8bit(array)
@@ -71,3 +67,7 @@ def set_array_to_pixmap(array, label, normalize = True):
     qimage = QImage(image_data, width, height, bytes_per_line, QImage.Format_Grayscale8)
     pixmap = QPixmap.fromImage(qimage)
     label.setPixmap(pixmap)
+
+def normalize_to_8bit(array):
+    norm = (255 * (array - array.min()) / (array.max() - array.min() + 1e-12)).astype(np.uint8)
+    return norm
