@@ -7,7 +7,6 @@ from ImageProcessor import set_array_to_pixmap
 import logging
 logging.basicConfig(level=logging.INFO, filename="Logging\\logging_file.log",
                      format='%(asctime)s:%(levelname)s:%(message)s', filemode='w') 
-FT_PAIRS = ["Magnitude/Phase", "Real/Imaginary"]
 
 
 class MainWindow(QMainWindow, UI.Ui_MainWindow):
@@ -81,7 +80,7 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
     def resize_images(self):
         self.logger.debug("New Image Loaded, finding smallest dimensions")
         heights, widths = [], []
-        for image_label in self.image_labels: #checks minimum size
+        for image_label in self.image_labels: # Checks minimum size
             if image_label.image.image is None:
                 continue
             heights.append(image_label.image.image.shape[0])
@@ -92,7 +91,7 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
 
         self.logger.debug(f"Minimum Height = {self.minimum_height}")
         self.logger.debug(f"Minimum Width = {self.minimum_width}")
-        for image_label in self.image_labels: #resizes images
+        for image_label in self.image_labels: # Resizes images
             image_label.image.resize_image(self.minimum_width, self.minimum_height)
             self.change_ft_component(image_label.ft_combobox.currentText(), image_label.image, image_label.ft_label)
 

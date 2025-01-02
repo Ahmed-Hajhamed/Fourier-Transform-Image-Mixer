@@ -1,14 +1,18 @@
 from PyQt5.QtWidgets import (QLabel, QProgressBar, QGridLayout,
-                QComboBox, QRadioButton, QButtonGroup, QPushButton, QWidget)
+                QComboBox, QRadioButton, QButtonGroup, QPushButton, QWidget, QDesktopWidget)
 from ImageProcessor import ImageProcessor
 import InputImageLabel
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
-        MainWindow.setWindowTitle("FT Image Mixer")
+        MainWindow.setWindowTitle("Fourier Transform Image Mixer")
         MainWindow.resize(1000, 600)
         self.centralwidget = QWidget(MainWindow)
+
+        screen_size = QDesktopWidget().screenGeometry().size()
+        label_size = (int(0.15625 * screen_size.width()), int(0.37 * screen_size.height()))
+
         self.main_gridLayout = QGridLayout(self.centralwidget)
         self.output_layout = QGridLayout()
         self.main_controls_layout = QGridLayout()
@@ -26,12 +30,14 @@ class Ui_MainWindow(object):
         line_8 = InputImageLabel.create_line()
         line_9 = InputImageLabel.create_line(horizontal= True)
 
-        self.image_1_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
-        self.image_2_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget)
+        self.image_1_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget,
+                                                              label_size = label_size)
+        self.image_2_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget,
+                                                              label_size = label_size)
         self.image_3_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget, 
-                                                             removable= True)
+                                                             label_size = label_size, removable= True)
         self.image_4_label = InputImageLabel.InputImageLabel(MainWindow, self.selected_region_slider, self.centralwidget,
-                                                             removable= True)
+                                                             label_size = label_size, removable= True)
         
         self.image_labels = [self.image_1_label, self.image_2_label, self.image_3_label, self.image_4_label]
 
@@ -41,8 +47,8 @@ class Ui_MainWindow(object):
         self.ft_pairs_label = QLabel("Reconstruction Pairs:")
         self.progress_label = QLabel("Mixing Progress:")
 
-        self.output_1_image = ImageProcessor(self.output_1_label)
-        self.output_2_image = ImageProcessor(self.output_2_label)
+        self.output_1_image = ImageProcessor(self.output_1_label, label_size = label_size)
+        self.output_2_image = ImageProcessor(self.output_2_label, label_size = label_size)
 
         self.group_button = QButtonGroup(self.centralwidget)
         self.output_1_radiobutton = create_radio_button(MainWindow, self.group_button ,state= True)

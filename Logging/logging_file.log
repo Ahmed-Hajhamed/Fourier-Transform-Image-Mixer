@@ -1,4 +1,15 @@
-2025-01-02 03:30:49,377:DEBUG:New Image Loaded, finding smallest dimensions
-2025-01-02 03:30:49,377:DEBUG:Minimum Height = 755
-2025-01-02 03:30:49,377:DEBUG:Minimum Width = 563
-2025-01-02 03:30:57,414:DEBUG:Mixing Images Started
+2025-01-02 14:34:19,598:DEBUG:New Image Loaded, finding smallest dimensions
+2025-01-02 14:34:19,598:DEBUG:Minimum Height = 755
+2025-01-02 14:34:19,598:DEBUG:Minimum Width = 563
+2025-01-02 14:34:24,271:DEBUG:Mixing Images Started
+2025-01-02 14:34:25,120:DEBUG:Mixing Images Started
+2025-01-02 14:34:25,135:DEBUG:Mixing Images Started
+2025-01-02 14:34:25,135:DEBUG:Cancelled running mixing operation
+2025-01-02 14:34:28,551:DEBUG:Mixing Images Started
+2025-01-02 14:34:31,063:DEBUG:Mixing Images Started
+2025-01-02 14:34:32,688:DEBUG:Mixing Images Started
+2025-01-02 14:34:32,703:DEBUG:Mixing Images Started
+2025-01-02 14:34:32,703:DEBUG:Cancelled running mixing operation
+2025-01-02 14:34:34,048:DEBUG:Mixing Images Started
+2025-01-02 14:34:34,064:DEBUG:Mixing Images Started
+2025-01-02 14:34:34,064:DEBUG:Cancelled running mixing operation

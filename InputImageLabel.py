@@ -7,15 +7,15 @@ FT_COMPONENTS = [["Magnitude", "Phase"], ["Real", "Imaginary"]]
 
 
 class InputImageLabel(QLabel):
-    def __init__(self, MainWindow, region_slider, parent=None, removable = False):
+    def __init__(self, MainWindow, region_slider, parent=None, label_size = (300, 400), removable = False):
         super().__init__(parent)
         self.MainWindow = MainWindow
         self.removable = removable
-        self.image = ImageProcessor.ImageProcessor(self)
+        self.image = ImageProcessor.ImageProcessor(self, label_size = label_size)
         self.image.load_image("Images\\Queen-Elizabeth-II.jpg")
         self.image.resize_image()
         self.last_mouse_pos = QPoint()
-        self.ft_label = ImageSelector.ImageSelector(slider= region_slider)
+        self.ft_label = ImageSelector.ImageSelector(slider= region_slider, label_size= label_size)
         
         self.weight_slider = create_slider(0, 200)
         line = create_line()
@@ -33,6 +33,8 @@ class InputImageLabel(QLabel):
 
         MainWindow.change_ft_component(self.ft_combobox.currentText(), self.image, self.ft_label)
 
+        self.setFixedSize(*label_size)
+    
         self.image_layout = QGridLayout()
         self.image_layout.addWidget(self, 0, 0, 1, 2)
         self.image_layout.addWidget(self.ft_label, 0, 3, 1, 2)
@@ -58,15 +60,15 @@ class InputImageLabel(QLabel):
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             self.last_mouse_pos = event.pos()
-            self.in_brightness = self.image.brightness
-            self.in_con = self.image.contrast
+            self.initial_brightness = self.image.brightness
+            self.initial_contrast = self.image.contrast
 
     def mouseMoveEvent(self, event):
         if self.image.image is not None and event.buttons() & Qt.LeftButton:
             delta = event.pos() - self.last_mouse_pos
             self.last_mouse_pos = event.pos()
-            new_brightness = self.in_brightness - delta.y() /10
-            new_contrast = max(0.1, self.in_con + delta.x()/10 * 0.01) 
+            new_brightness = self.initial_brightness - delta.y() /10
+            new_contrast = max(0.1, self.initial_contrast + delta.x()/10 * 0.01) 
             brightness_min, brightness_max = -50, 50  
             contrast_min, contrast_max = 0.5, 2.0  
             self.image.brightness = max(brightness_min, min(brightness_max, new_brightness))
@@ -74,11 +76,11 @@ class InputImageLabel(QLabel):
             self.image.adjust_brightness_contrast()
 
 
-def create_line(horizontal = False, thick = True):
+def create_line(horizontal = False, thick_line = True):
         line = QFrame() 
         line.setFrameShape(QFrame.HLine) if horizontal else line.setFrameShape(QFrame.VLine)
         line.setFrameShadow(QFrame.Sunken)
-        if thick: line.setStyleSheet("border: 1px solid purple;")
+        if thick_line: line.setStyleSheet("border: 1px solid purple;")
         return line
 
 def create_slider(minimum, maximum):

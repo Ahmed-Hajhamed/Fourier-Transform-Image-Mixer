@@ -5,15 +5,15 @@ from PyQt5.QtGui import QPixmap, QImage
 
 
 class ImageProcessor:
-    def __init__(self, image_label):
+    def __init__(self, image_label, label_size = (300, 400)):
         super().__init__()
         self.image = None
         self.contrast = 1.0
         self.brightness = 0
         self.image_label = image_label
         self.image_label.setScaledContents(True)
-        self.image_label.setFixedSize(300, 400)
-    
+        self.image_label.setFixedSize(*label_size)
+
     def update_display(self):
         if self.image is None:
             self.image_label.clear()
@@ -24,10 +24,9 @@ class ImageProcessor:
         if image_path is None:
             image_path, _ = QFileDialog.getOpenFileName(
                 None, 
-                "Open File", 
-                "Images", 
-                "All Files (*.*);;Text Files (*.txt);;Images (*.png *.xpm *.jpg *.jpeg *.bmp *.gif)"
-            )
+                "Open File", "Images", 
+                "Images (*.png *.xpm *.jpg *.jpeg *.jpe *.jp2 *.bmp *.gif *.webp *.dib *.avif\
+                  *.pic *.hdr *.pbm *.pgm *.ppm *.pxm *.pnm *.pfm *.sr *.ras *.tiff *.tif *.exr)")
         if image_path:
             self.image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
             self.adjust_brightness_contrast(reset= True)
