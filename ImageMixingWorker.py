@@ -35,6 +35,7 @@ class ImageMixingWorker(QThread):
                     continue
 
                 if image_label.ft_combobox.currentText() == "Magnitude":
+                    print(f"mag:{image_label.image.magnitude_spectrum}")
                     self.magnitude_spectrum +=  (image_label.image.magnitude_spectrum\
                                                             * image_label.weight_slider.value() / 100)
                     
@@ -51,7 +52,6 @@ class ImageMixingWorker(QThread):
             if np.all(np.isclose(self.magnitude_spectrum, 0)): 
                 self.magnitude_spectrum = np.ones_like(self.image_labels[0].image.magnitude_spectrum, dtype=np.float64)\
                                                                 * self.number_of_images
-                
             ft_shifted = (self.magnitude_spectrum / self.number_of_images) * np.exp(1j * self.phase_spectrum)
 
         elif self.reconstruction_pair == "Real and Imaginary":
