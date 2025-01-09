@@ -24,7 +24,7 @@ A Python desktop application that allows users to mix Fourier transform componen
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/Ahmed-Hajhamed/Task-4-DSP
+   git clone https://github.com/Ahmed-Hajhamed/Fourier-Transform-Image-Mixer.git
    ```
 2. Install required dependencies:
   ```bash
