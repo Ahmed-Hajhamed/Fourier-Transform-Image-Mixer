@@ -14,6 +14,7 @@ class ImageMixingWorker(QThread):
         self.is_canceled = False 
         self.log_scaled_output = False 
 
+    def run(self):
         self.number_of_images = 0.0
         for image_label in self.image_labels:
             if image_label.image.image is not None:
@@ -25,7 +26,6 @@ class ImageMixingWorker(QThread):
         self.real_component = np.zeros_like(self.image_labels[0].image.real_component, dtype=np.float64)
         self.imaginary_component = np.zeros_like(self.image_labels[0].image.imaginary_component, dtype=np.float64)
 
-    def run(self):
         if self.reconstruction_pair == "Magnitude and Phase":
             for idx, image_label in enumerate(self.image_labels):
                 if self.is_canceled:
