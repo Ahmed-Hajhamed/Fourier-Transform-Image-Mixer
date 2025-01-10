@@ -25,6 +25,7 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
     def change_ft_component(self, current_text_on_combobox, image, ft_label):
         if image.image is None:
             ft_label.clear()
+            return
 
         elif current_text_on_combobox == "Magnitude":
             set_array_to_pixmap(image.magnitude_log, ft_label)
@@ -86,12 +87,15 @@ class MainWindow(QMainWindow, UI.Ui_MainWindow):
             heights.append(image_label.image.image.shape[0])
             widths.append(image_label.image.image.shape[1])
 
-        self.minimum_height = min(heights)
-        self.minimum_width = min(widths)
-
-        self.logger.debug(f"Minimum Height = {self.minimum_height}")
-        self.logger.debug(f"Minimum Width = {self.minimum_width}")
+        if len(heights) > 0 and len(widths) > 0:
+            self.minimum_height = min(heights)
+            self.minimum_width = min(widths)
+            self.logger.debug(f"Minimum Height = {self.minimum_height}")
+            self.logger.debug(f"Minimum Width = {self.minimum_width}")
+            
         for image_label in self.image_labels: # Resizes images
+            if image_label.image.image is None:
+                continue 
             image_label.image.resize_image(self.minimum_width, self.minimum_height)
             self.change_ft_component(image_label.ft_combobox.currentText(), image_label.image, image_label.ft_label)
 

@@ -8,6 +8,13 @@ class ImageProcessor:
     def __init__(self, image_label, label_size = (300, 400)):
         super().__init__()
         self.image = None
+        self.ft = None
+        self.ft_shifted = None
+        self.magnitude_spectrum = None
+        self.magnitude_log = None
+        self.phase_spectrum = None
+        self.real_component = None
+        self.imaginary_component = None
         self.contrast = 1.0
         self.brightness = 0
         self.image_label = image_label

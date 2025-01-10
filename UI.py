@@ -47,9 +47,6 @@ class Ui_MainWindow(object):
         self.ft_pairs_label = QLabel("Reconstruction Pairs:")
         self.progress_label = QLabel("Mixing Progress:")
 
-        self.output_1_image = ImageProcessor(self.output_1_label, label_size = label_size)
-        self.output_2_image = ImageProcessor(self.output_2_label, label_size = label_size)
-
         self.group_button = QButtonGroup(self.centralwidget)
         self.output_1_radiobutton = create_radio_button(MainWindow, self.group_button ,state= True)
         self.output_2_radiobutton = create_radio_button(MainWindow, self.group_button)
