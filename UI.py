@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import (QLabel, QProgressBar, QGridLayout,
                 QComboBox, QRadioButton, QButtonGroup, QPushButton, QWidget, QDesktopWidget)
-from ImageProcessor import ImageProcessor
 import InputImageLabel
 
 
